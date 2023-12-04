@@ -4,6 +4,9 @@ import MainLayout from "../layouts/MainLayout";
 import AdminLayout from "../layouts/AdminLayout";
 import MoviesPage from "../view/admin/Movies/MoviesPage";
 import AddandEditPage from "../view/admin/Movies/AddandEdit/AddandEditPage";
+import ShowsPage from "../view/admin/Shows/ShowsPage";
+import AddShowPage from "../view/admin/Shows/AddShow/AddShowPage";
+import EditShowPage from "../view/admin/Shows/EditShow/EditShowPage";
 
 const router = createBrowserRouter([
     {
@@ -28,6 +31,18 @@ const router = createBrowserRouter([
             {
                 path: "/dashboard/movie/add",
                 element: <AddandEditPage />
+            },
+            {
+                path: "/dashboard/shows",
+                element: <ShowsPage />
+            },
+            {
+                path: "/dashboard/show/add",
+                element: <AddShowPage />
+            },
+            {
+                path: "/dashboard/show/edit",
+                element: <EditShowPage />
             }
         ]
     }

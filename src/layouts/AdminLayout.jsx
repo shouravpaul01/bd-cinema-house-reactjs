@@ -1,11 +1,12 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
 import profilePic from "../assets/images/profile.jpg"
+import { ToastContainer } from "react-toastify";
 
 const AdminLayout = () => {
-  
+
     const handleLogout = () => {
-        
+
     };
 
     return (
@@ -29,6 +30,19 @@ const AdminLayout = () => {
                 <div className="mx-2 md:mx-10 my-12">
                     {/* Page content here */}
                     <Outlet />
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={3000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="light"
+                    />
+                    
                 </div>
             </div>
             <div className="drawer-side">
@@ -45,8 +59,9 @@ const AdminLayout = () => {
 
                     </div>
                     {/* Sidebar content here */}
-                    <li><NavLink to={'/dashboard/'} className={({ isActive }) => isActive ? "sidebar-active-link" : ""}>Dashboard</NavLink></li>
-                    <li><NavLink to={'/dashboard/movies'} className={({ isActive }) => isActive ? "sidebar-active-link" : ""}>Movies</NavLink></li>
+                    <li><NavLink to={"/dashboard"} className={({ isActive }) => isActive ? "active" : ""}>Dashboard</NavLink></li>
+                    <li><NavLink to={'/dashboard/movies'} className={({ isActive }) => isActive ? "active" : ""}>Movies</NavLink></li>
+                    <li><NavLink to={'/dashboard/shows'} className={({ isActive }) => isActive ? "active" : ""}>Movie Shows</NavLink></li>
                 </ul>
 
             </div>
