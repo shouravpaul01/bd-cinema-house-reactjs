@@ -4,21 +4,24 @@ import 'flatpickr/dist/themes/material_green.css';
 import useAllMovies from "../../hooks/useAllMovies";
 import { useEffect, useState } from "react";
 import CreatableSelect from 'react-select/creatable';
-import { FaCircleArrowRight } from "react-icons/fa6";
+import { FaCircleArrowRight, FaCircleXmark } from "react-icons/fa6";
 import axiosInstance from "../../../axiosConfig";
 import { toast } from "react-toastify";
 import useAllMovieShow from "../../hooks/useAllMovieShow";
+import { useNavigate } from "react-router-dom";
 
 
 const AddandEditShowFrom = ({ editData }) => {
     const movieShows = editData || null
-    const timeTypePriceId = movieShows?.showTimesTypesPrice[0]?._id == null
+    const timeTypePriceId = movieShows?.showTimesTypesPrice && movieShows?.showTimesTypesPrice[0]?._id || null
+    console.log(timeTypePriceId);
     const { register, handleSubmit, reset, control, watch, setValue, setError, formState: { errors } } = useForm()
     const checkRegular = watch('regular')
     const premiumRegular = watch('premium')
     const [uniqueError, setUniqueError] = useState(null);
     const { movies } = useAllMovies()
     const { mutate } = useAllMovieShow()
+    const navigate = useNavigate()
 
     // console.log(movieShows);
     const options = [
@@ -33,32 +36,32 @@ const AddandEditShowFrom = ({ editData }) => {
             setValue('showId', movieShows._id)
             setValue('date', movieShows.date)
             setValue('movie', movieShows.movie._id)
-            setValue('time', movieShows.showTimesTypesPrice[0]?.time)
-            setValue('timeTypePriceId', movieShows?.showTimesTypesPrice[0]?._id)
-            const seatTypesPrices = movieShows?.showTimesTypesPrice[0]?.seatTypesPrice
-            {
-                seatTypesPrices && seatTypesPrices?.map((element, index) => {
+
+            movieShows?.showTimesTypesPrice && (
+                setValue('time', movieShows?.showTimesTypesPrice[0]?.time),
+                setValue('timeTypePriceId', movieShows?.showTimesTypesPrice[0]?._id),
+                setValue('timeTypePriceId', movieShows?.showTimesTypesPrice[0]?._id),
+
+                movieShows?.showTimesTypesPrice[0]?.seatTypesPrice?.map(element => {
                     setValue(element.seatType, element.seatType)
 
                     element.seatType == 'regular' && setValue('regularSeatPrice', element.price)
                     element.seatType == 'premium' && setValue('premiumSeatPrice', element.price)
                 })
-            }
-
+            )
         }
     }, [movieShows])
 
     const handleStore = (data) => {
 
-        const regular = data.regular?{ seatType: data.regular, price: data.regularSeatPrice }:null
-        const premium = data.premium?{ seatType: data.premium, price: data.premiumSeatPrice }:null
+        const regular = data.regular ? { seatType: data.regular, price: data.regularSeatPrice } : null
+        const premium = data.premium ? { seatType: data.premium, price: data.premiumSeatPrice } : null
         const seatTypesPrice = []
         regular !== null && seatTypesPrice.push(regular);
         premium !== null && seatTypesPrice.push(premium);
         const showTimesTypesPrice = [{ time: data.time, seatTypesPrice: seatTypesPrice }]
+        //Final Movie show schedule
         const newData = { date: data.date, movie: data.movie, showTimesTypesPrice: showTimesTypesPrice }
-        console.log(newData);
-
 
         axiosInstance.post('/show', newData)
             .then(res => {
@@ -82,13 +85,13 @@ const AddandEditShowFrom = ({ editData }) => {
             })
     }
     const handleUpdate = (data) => {
-         const regular = data.regular?{ seatType: data.regular, price: data.regularSeatPrice }:null
-        const premium = data.premium?{ seatType: data.premium, price: data.premiumSeatPrice }:null
+        const regular = data.regular ? { seatType: data.regular, price: data.regularSeatPrice } : null
+        const premium = data.premium ? { seatType: data.premium, price: data.premiumSeatPrice } : null
         const seatTypesPrice = []
         regular !== null && seatTypesPrice.push(regular);
         premium !== null && seatTypesPrice.push(premium);
         const showTimesTypesPrice = [{ time: data.time, seatTypesPrice: seatTypesPrice }]
-        const newData = { showId: data.showId,timeTypePriceId:data.timeTypePriceId, date: data.date, movie: data.movie, showTimesTypesPrice: showTimesTypesPrice }
+        const newData = { showId: data.showId, timeTypePriceId: data.timeTypePriceId, date: data.date, movie: data.movie, showTimesTypesPrice: showTimesTypesPrice }
 
         !data?.timeTypePriceId && delete newData['timeTypePriceId']
         console.log(newData);
@@ -110,15 +113,14 @@ const AddandEditShowFrom = ({ editData }) => {
                 if (res.data.code == 200) {
                     toast.success(res.data.message)
                     mutate()
-
+                    navigate("/dashboard/shows")
                 }
             })
     }
 
     return (
-        <>{uniqueError && <div role="alert" className="alert alert-error mt-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <span>{uniqueError}</span>
+        <>{uniqueError && <div onClick={() => setUniqueError(null)} role="alert" className="alert alert-error mt-2">
+            <FaCircleXmark />  <span>{uniqueError}</span>
         </div>}
             <form onSubmit={handleSubmit(movieShows ? handleUpdate : handleStore)}>
                 {
@@ -175,7 +177,7 @@ const AddandEditShowFrom = ({ editData }) => {
                         <Controller
                             name="time"
                             control={control}
-
+                            defaultValue={{}}
                             rules={{
                                 required: 'Time is required',
                                 validate: (data) => {

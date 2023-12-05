@@ -3,7 +3,7 @@ import axiosInstance from "../../../axiosConfig";
 import { useState } from "react";
 import Modal from "../CommonComponents/Modal";
 import useAllMovieShow from "../../hooks/useAllMovieShow";
-import { FaCircleInfo, FaPenToSquare, FaTrashCan } from "react-icons/fa6";
+import { FaCircleInfo, FaPenToSquare, FaPlus, FaTrashCan } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import MovieShowTimes from "./MovieShowTimes";
 
@@ -62,18 +62,17 @@ const ShowTable = () => {
                                 <th>{index + 1}</th>
                                 <td>{show.movie.name}</td>
                                 <td>{show.date}</td>
-                                <td className="flex gap-2">{show.showTimesTypesPrice.map((element, index) => <MovieShowTimes key={index + 1} element={element} index={index} showId={show._id} />)}
-
-                                </td>
-                                <td><button className="btn btn-xs btn-primary uppercase" onClick={() => handleStatus(show._id, show.status == 'deactive' ? 'active' : 'deactive')}>{show.status}</button></td>
-                                <td>
-                                    <div className="join">
-                                        {show.showTimesTypesPrice.length == 0 && <Link to={{
+                                <td className="flex items-center gap-2">{show.showTimesTypesPrice.map((element, index) => <MovieShowTimes key={index + 1} element={element} index={index} showId={show._id} />)}
+                                <Link to={{
                                             pathname: `/dashboard/show/edit`,
-                                            search: `?showId=${show._id}`
-                                        }} className="btn btn-xs btn-primary join-item"><FaPenToSquare /></Link>}
-                                        <button onClick={() => handleDetails(show._id)} className="btn btn-xs join-item"><FaCircleInfo /></button>
-                                        <button onClick={() => handleDelete(show._id)} className="btn btn-xs btn-warning join-item" ><FaTrashCan /></button>
+                                            search: `?showId=${show._id}&date=${show.date}`
+                                        }} className="btn btn-sm btn-circle btn-primary join-item"><FaPlus /></Link>
+                                </td>
+                                <td><button className={`btn btn-xs  uppercase ${ show.status == 'active' ? 'btn-primary' : 'btn-error'}`} onClick={() => handleStatus(show._id, show.status == 'active' ? 'deactive' : 'active')}>{show.status == 'active' ? 'active' : 'deactive'}</button></td>
+                                <td>
+                                    <div className="flex gap-1">
+                                        <button onClick={() => handleDetails(show._id)} className="btn btn-sm btn-circle "><FaCircleInfo /></button>
+                                        <button onClick={() => handleDelete(show._id)} className="btn btn-sm btn-circle btn-error " ><FaTrashCan /></button>
 
                                     </div></td>
                             </tr>

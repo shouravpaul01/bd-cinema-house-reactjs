@@ -6,35 +6,34 @@ import axiosInstance from "../../../../../axiosConfig";
 
 
 const EditShowPage = () => {
-    const [searchParams]=useSearchParams()
-    const showId=searchParams.get('showId') || null
-    const timeTypePriceId=searchParams.get('timeTypePriceId') || null
+    const [searchParams] = useSearchParams()
+    const showId = searchParams.get('showId') || null
+    const date = searchParams.get('date') || null
+    const timeTypePriceId = searchParams.get('timeTypePriceId') || null
 
-  const [editData,setEditData]=useState(null)
-  console.log(showId ,timeTypePriceId);
-console.log(editData);
+    const [editData, setEditData] = useState(null)
+
     useEffect(() => {
         if (showId && timeTypePriceId) {
-            console.log('iii');
             axiosInstance.get(`/show/edit-data?showId=${showId}&timeTypePriceId=${timeTypePriceId}`)
-            .then(res => {
-               setEditData(res.data)
-            }) 
+                .then(res => {
+                    setEditData(res.data)
+                })
         }
-        // if (showId) {
-        //     console.log('showId');
-        //     axiosInstance.get(`/show/edit-data?showId=${showId}`)
-        //     .then(res => {
-        //       return  setEditData(res.data)
-        //     }) 
-        // }
-        
+        if (showId && date) {
+            console.log('showId');
+            axiosInstance.get(`/show/edit-data?showId=${showId}`)
+                .then(res => {
+                    return setEditData(res.data)
+                })
+        }
+
     }, [showId])
 
     return (
         <>
             <Heading title={'Movie Shows'} btnName={'Shows'} hrefUrl={'/dashboard/shows'} />
-            <AddandEditShowFrom editData={editData}/>
+            <AddandEditShowFrom editData={editData} />
         </>
     );
 };

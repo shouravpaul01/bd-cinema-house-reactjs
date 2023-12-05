@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import axiosInstance from "../../../axiosConfig";
 import useAllMovieShow from "../../hooks/useAllMovieShow";
 import { toast } from "react-toastify";
+import { FaPenToSquare, FaTrashCan } from "react-icons/fa6";
 
 
 const MovieShowTimes = ({ showId, element, index }) => {
@@ -23,8 +24,8 @@ const MovieShowTimes = ({ showId, element, index }) => {
                 <li><Link to={{
                     pathname:'/dashboard/show/edit',
                     search:`?showId=${showId}&timeTypePriceId=${element._id}`
-                }}>Edit</Link></li>
-                <li><Link onClick={() => handleDelete(showId, element._id)}>Delete</Link></li>
+                }}><FaPenToSquare /> Edit</Link></li>
+                <li><Link onClick={() => handleDelete(showId, element._id)}><FaTrashCan /> Delete</Link></li>
             </ul>
         </div>
     );
