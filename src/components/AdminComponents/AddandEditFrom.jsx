@@ -11,8 +11,9 @@ import { mutate } from "swr";
 
 const AddandEditFrom = ({ editData,mutate }) => {
     const movie = editData || null
+    console.log(movie);
     const [imagePreview, setImagePreview] = useState(null);
-    const { register, handleSubmit, reset, setValue, setError, formState: { errors } } = useForm()
+    const { register, handleSubmit, reset,control, setValue, setError, formState: { errors } } = useForm()
 //  console.log(movie);
 //  console.log(errors);
     const categoryOptions = [
@@ -51,7 +52,7 @@ const AddandEditFrom = ({ editData,mutate }) => {
         }
       };
     const handleStoreMovie = (data) => {
-        console.log(data.movieImage);
+        console.log(data);
         const formData = new FormData();
         formData.append("movieImage", data.movieImage[0] );
         formData.append("newData", JSON.stringify(data));
@@ -116,7 +117,7 @@ const AddandEditFrom = ({ editData,mutate }) => {
     return (
         <>
             <form onSubmit={handleSubmit(movie ? handleUpdate : handleStoreMovie)}>
-            <input type="hidden" {...register('_id')} />
+            {movie && <input type="hidden" {...register('_id')} />}
                 <div className="flex flex-col md:flex-row gap-4">
 
                     <div className="form-control w-full ">
@@ -131,8 +132,24 @@ const AddandEditFrom = ({ editData,mutate }) => {
                         <label className="label">
                             <span className="label-text">Release Date</span>
                         </label>
-                        <Flatpickr {...register('releaseDate', { required: "The field is required." })} className="input input-bordered w-full " placeholder="Release Date" options={{ dateFormat: 'd-M-Y', static: true, enableTime: false }}
-                            onChange={(day, date, instance) => setValue('releaseDate', date)} />
+                        <Controller
+                            control={control}
+                            name="releaseDate"
+                            rules={{ required: 'This field is required' }}
+
+                            render={({ field }) => (
+                                <Flatpickr
+                                    {...field}
+                                    options={{ dateFormat: 'd-M-Y',enableTime:true, static: true }}
+                                    onChange={(selectedDates, dateStr, ins) => {
+                                        setValue('releaseDate', selectedDates[0]),
+                                        console.log(selectedDates);
+                                    }}
+                                    className="input input-bordered w-full "
+                                    placeholder="Release Date"
+                                />
+                            )}
+                        />
 
                         {errors?.releaseDate && <p className="text-red-400">{errors.releaseDate.message}</p>}
                     </div>

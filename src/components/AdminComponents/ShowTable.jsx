@@ -6,6 +6,7 @@ import useAllMovieShow from "../../hooks/useAllMovieShow";
 import { FaCircleInfo, FaPenToSquare, FaPlus, FaTrashCan } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import MovieShowTimes from "./MovieShowTimes";
+import moment from "moment/moment";
 
 
 const ShowTable = () => {
@@ -61,16 +62,20 @@ const ShowTable = () => {
                             moviesShow?.map((show, index) => <tr key={show._id}>
                                 <th>{index + 1}</th>
                                 <td>{show.movie.name}</td>
-                                <td>{show.date}</td>
+                                <td>{moment(show.date).format('DD-MMM-YYYY')}</td>
                                 <td className="flex items-center gap-2">{show.showTimesTypesPrice.map((element, index) => <MovieShowTimes key={index + 1} element={element} index={index} showId={show._id} />)}
-                                <Link to={{
+                                    <Link to={{
+                                        pathname: `/dashboard/show/edit`,
+                                        search: `?showId=${show._id}&date=${show.date}`
+                                    }} className="btn btn-sm btn-circle btn-primary join-item"><FaPlus /></Link>
+                                </td>
+                                <td><button className={`btn btn-xs  uppercase ${show.status == 'active' ? 'btn-primary' : 'btn-error'}`} onClick={() => handleStatus(show._id, show.status == 'active' ? 'deactive' : 'active')}>{show.status == 'active' ? 'active' : 'deactive'}</button></td>
+                                <td>
+                                    <div className="flex gap-1">
+                                        <Link to={{
                                             pathname: `/dashboard/show/edit`,
                                             search: `?showId=${show._id}&date=${show.date}`
                                         }} className="btn btn-sm btn-circle btn-primary join-item"><FaPlus /></Link>
-                                </td>
-                                <td><button className={`btn btn-xs  uppercase ${ show.status == 'active' ? 'btn-primary' : 'btn-error'}`} onClick={() => handleStatus(show._id, show.status == 'active' ? 'deactive' : 'active')}>{show.status == 'active' ? 'active' : 'deactive'}</button></td>
-                                <td>
-                                    <div className="flex gap-1">
                                         <button onClick={() => handleDetails(show._id)} className="btn btn-sm btn-circle "><FaCircleInfo /></button>
                                         <button onClick={() => handleDelete(show._id)} className="btn btn-sm btn-circle btn-error " ><FaTrashCan /></button>
 

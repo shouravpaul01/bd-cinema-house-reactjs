@@ -61,8 +61,8 @@ const AddandEditShowFrom = ({ editData }) => {
         premium !== null && seatTypesPrice.push(premium);
         const showTimesTypesPrice = [{ time: data.time, seatTypesPrice: seatTypesPrice }]
         //Final Movie show schedule
-        const newData = { date: data.date, movie: data.movie, showTimesTypesPrice: showTimesTypesPrice }
-
+        const newData = { date: data.date[0], movie: data.movie, showTimesTypesPrice: showTimesTypesPrice }
+        console.log(newData);
         axiosInstance.post('/show', newData)
             .then(res => {
                 if (res.data.uniqueErrorCode == 204) {
@@ -143,12 +143,12 @@ const AddandEditShowFrom = ({ editData }) => {
                                 <Flatpickr
                                     {...field}
                                     options={{ dateFormat: 'd-M-Y', static: true }}
-                                    onChange={(selectedDates, dateStr, ins) => {
-                                        setValue('date', dateStr)
-                                    }}
+                                    // onChange={(selectedDates, dateStr, ins) => {
+                                    //     setValue('date', selectedDates)
+                                    // }}
                                     className="input input-bordered w-full "
-                                    disabled={movieShows ? true : false}
-                                    placeholder="Release Date"
+                                    disabled={movieShows? true : false}
+                                    placeholder="Date"
                                 />
                             )}
                         />

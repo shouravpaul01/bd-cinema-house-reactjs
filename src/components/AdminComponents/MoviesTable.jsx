@@ -72,10 +72,10 @@ const MoviesTable = () => {
                                 <td>{movie.duration}</td>
                                 <td><button className="btn btn-xs btn-primary uppercase" onClick={() => handleStatus(movie._id, movie.status == 'deactive' ? 'active' : 'deactive')}>{movie.status}</button></td>
                                 <td>
-                                    <div className="join">
-                                        <Link to={'#edit'} onClick={() => { handleEdit(movie._id), setModalId(movie._id) }} className="btn btn-xs btn-primary join-item"><FaPenToSquare /></Link>
-                                        <button onClick={() => handleDetails(movie._id)} className="btn btn-xs join-item"><FaCircleInfo /></button>
-                                        <button onClick={() => handleDelete(movie._id)} className="btn btn-xs btn-warning join-item" ><FaTrashCan /></button>
+                                    <div className="flex gap-2">
+                                        <Link to={`?_id=${movie._id}`} onClick={() => { handleEdit(movie._id), setModalId(movie._id) }} className="btn btn-xs btn-circle btn-primary "><FaPenToSquare /></Link>
+                                        <button onClick={() => handleDetails(movie._id)} className="btn btn-xs btn-circle "><FaCircleInfo /></button>
+                                        <button onClick={() => handleDelete(movie._id)} className="btn btn-xs btn-circle btn-error " ><FaTrashCan /></button>
 
                                     </div></td>
                             </tr>
