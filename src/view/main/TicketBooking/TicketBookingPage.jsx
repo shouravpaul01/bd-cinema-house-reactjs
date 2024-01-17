@@ -1,18 +1,29 @@
+<<<<<<< HEAD
 import { FaCalendarDays, FaChair, FaMinus, FaPlus, FaRegClock, FaRegMoneyBill1 } from "react-icons/fa6";
+=======
+import { FaCalendarDays, FaChair, FaRegClock, FaRegMoneyBill1 } from "react-icons/fa6";
+>>>>>>> 7ba1bcddbc49b927c790f593fe92dada87ebe39f
 import { BsTicketDetailed } from "react-icons/bs";
 import axiosInstance from "../../../../axiosConfig";
 import moment from "moment/moment";
 import DateCard from "../../../components/MainComponents/DateCard";
+<<<<<<< HEAD
 import { useCallback, useEffect, useReducer, useState } from "react";
 import useMoviesShowDate from "../../../hooks/useMoviesShowDate";
 import MovieCard from "../../../components/MainComponents/MovieCard";
 import ScheduleTimeCard from "../../../components/MainComponents/ScheduleTimeCard";
 import SeatTypePriceCard from "../../../components/MainComponents/SeatTypePriceCard";
 import useTimeCount from "../../../hooks/useTimeCount";
+=======
+import { useEffect, useState } from "react";
+import useMoviesShowDate from "../../../hooks/useMoviesShowDate";
+import MovieCard from "../../../components/MainComponents/MovieCard";
+>>>>>>> 7ba1bcddbc49b927c790f593fe92dada87ebe39f
 
 const TicketBookingPage = () => {
     const [movies, setMovies] = useState(null)
     const [scheduleTime, setScheduleTime] = useState(null)
+<<<<<<< HEAD
     const [seatTypesPrice, setSeatTypesPrice] = useState(null)
     const [selectSeatType, setSelectSeatType] = useState(null)
     const [totalTicket, setTotalTicket] = useState(0)
@@ -142,6 +153,55 @@ const TicketBookingPage = () => {
                 <aside className=" flex-none ">
                     <p className="text-2xl font-semibold mb-3">Tickets Summary</p>
                     <div className="w-full md:w-80  bg-white rounded-lg p-4 ">
+=======
+    console.log(scheduleTime);
+
+
+    const handleShowByDate = (date) => {
+        axiosInstance.get(`/show/active-movies-by-date?date=${date}`)
+            .then(res => setMovies(res.data))
+    }
+    const handleScheduleTime = (_id) => {
+        console.log(_id);
+        axiosInstance.get(`/show/active-movie-by-id/${_id}`)
+            .then(res => setScheduleTime(res.data))
+    }
+    return (
+        <div className="my-container my-24">
+            <div className="flex flex-col md:flex-row gap-7">
+                {/* Main Content */}
+                <div className="flex-1 ">
+                    <div className="mb-6">
+                        <h3 className="text-2xl font-semibold  mb-3">Select Date</h3>
+                        <div className="flex gap-3">
+                            <DateCard handleShowByDate={handleShowByDate} />
+                        </div>
+                    </div>
+                    <div className="mb-9">
+                        <h3 className="text-2xl font-semibold  mb-3">Select Movie ({movies?.length})</h3>
+                        <div className="flex gap-3">
+                            <MovieCard handleScheduleTime={handleScheduleTime} movies={movies} />
+                        </div>
+
+                    </div>
+
+                    {scheduleTime && <div>
+                        <h3 className="text-2xl font-semibold  mb-3">Select Show Time</h3>
+                        <div className="flex items-center bg-white rounded-md px-3 py-7">
+                            <p className="flex-1 text-xl font-semibold">Hall</p>
+                            <div className="flex gap-2" >
+                                {
+                                    scheduleTime?.showTimesTypesPrice?.map(element => <div key={element._id} className="border rounded-md px-4 py-1">{element.time.value}</div>)
+                                }
+                            </div>
+                        </div>
+                    </div>}
+                </div>
+                {/* Sidebar */}
+                <aside className="flex-none ">
+                    <p className="text-2xl font-semibold mb-3">Tickets Summary</p>
+                    <div className="w-full md:w-80  bg-white rounded-lg p-4">
+>>>>>>> 7ba1bcddbc49b927c790f593fe92dada87ebe39f
                         <div className="p-4">
                             <h1 className="text-2xl font-bold">Sidebar</h1>
                         </div>
