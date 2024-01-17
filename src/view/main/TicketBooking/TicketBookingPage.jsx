@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 const TicketBookingPage = () => {
     const [movies, setMovies] = useState(null)
     const [scheduleTime, setScheduleTime] = useState(null)
+    const [selectedDate, setSelectedDate] = useState(null)
     const [selectedScheduleTime, setSelectedScheduleTime] = useState(null)
     const [seatTypesPrice, setSeatTypesPrice] = useState(null)
     const [selectedSeatType, setSelectedSeatType] = useState(null)
@@ -32,6 +33,7 @@ useEffect(()=>{
 
 
     const handleMoviesByDate = useCallback((date) => {
+        setSelectedDate(date)
         axiosInstance.get(`/show/active-movies-by-date?date=${date}`)
             .then(res => setMovies(res.data))
         setScheduleTime(null)
@@ -56,13 +58,13 @@ useEffect(()=>{
         setTicketQuantity(0)
         setTotalAmount(null)
     }, [ticketQuantity])
-    console.log(ticketQuantity);
+
     const handleticketQuantityPlus = () => {
         if (ticketQuantity == 10) {
             return
         }
         setTicketQuantity((prevCount) => prevCount + 1)
-        
+        setSelectedSeat([])
     }
     const handleticketQuantityMinus = () => {
         if (ticketQuantity == 0) {
@@ -74,6 +76,11 @@ useEffect(()=>{
     }
     
     const handleSeatBooking=useCallback((seat)=>{
+        const matchedSeat=selectedSeat.filter((element) => element == seat);
+        if (matchedSeat.length>0) {
+            handleSeatBookingbyDoubleClick(seat)
+            return
+        }
         if (ticketQuantity==selectedSeat.length) {
             toast.error('You selected max amount of ticket')
             return
@@ -82,6 +89,11 @@ useEffect(()=>{
         const newSeat=[seat,...selectedSeat]
         setSelectedSeat(newSeat)
     },[ticketQuantity,selectedSeat,totalAmount])
+    const handleSeatBookingbyDoubleClick=(seat)=>{
+        const newSeat = selectedSeat.filter((element) => element !== seat);
+        setSelectedSeat(newSeat)
+       // console.log(selectedSeat);
+    }
     return (
         <div className="my-container my-24">
             <div className="flex flex-col md:flex-row gap-7  ">
@@ -150,7 +162,7 @@ useEffect(()=>{
                                 const seatNumber = (index % 10) + 1;
                                 const seatLabel = `${rowLabel}${seatNumber}`;
                                 const matchedSeats = selectedSeat.find((element) => element === seatLabel);
-                                return (<li key={index + 1} className={`btn btn-sm  ${matchedSeats ? "btn-warning" : ""} `} onClick={()=>handleSeatBooking(seatLabel)}>{seatLabel}</li>)
+                                return (<li key={index + 1} className={`btn btn-sm  ${matchedSeats ? "btn-warning" : ""} `} onClick={()=>handleSeatBooking(seatLabel)} onDoubleClick={()=>handleSeatBookingbyDoubleClick(seatLabel)}>{seatLabel}</li>)
                             })
                         }
 
@@ -168,7 +180,7 @@ useEffect(()=>{
                         <div className="my-4">
                             <div className="flex mt-4">
                                 <p className="flex items-center gap-3 grow"> <FaCalendarDays /> Show Date</p>
-                                <p className="">2-3-2</p>
+                                <p className="">{selectedDate?moment(selectedDate).format('ll'):'--'}</p>
                             </div>
                             <div className="flex  mt-4">
                                 <p className="flex items-center gap-3 grow"> <FaCalendarDays /> Hall Name</p>
