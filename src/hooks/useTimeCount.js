@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 
 
-const useTimeCount = (totalTicket) => {
+const useTimeCount = (ticketQuantity) => {
     const [time, setTime] = useState(0); // Convert minutes to seconds
     const [displayTime, setDisplayTime] = useState({ minutes: 0, seconds: 0 });
   //console.log(time);
     useEffect(() => {
-        if (totalTicket>0) {
+        if (ticketQuantity>0) {
             const intervalId = setInterval(() => {
-                // Update the time every second
+                // Update the time every secondgit show-branch -r
                 setTime(prevTime => prevTime - 1);
           
                 // Calculate minutes and seconds from the remaining time
@@ -31,11 +31,11 @@ const useTimeCount = (totalTicket) => {
       return () => clearInterval(intervalId);
         }
       
-  if (totalTicket==0) {
+  if (ticketQuantity==0) {
     setTime(2*60)
   }
       
-    }, [time,totalTicket]);
+    }, [time,ticketQuantity]);
     return displayTime
 };
 

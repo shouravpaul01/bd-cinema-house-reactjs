@@ -1,38 +1,33 @@
-<<<<<<< HEAD
 import { FaCalendarDays, FaChair, FaMinus, FaPlus, FaRegClock, FaRegMoneyBill1 } from "react-icons/fa6";
-=======
-import { FaCalendarDays, FaChair, FaRegClock, FaRegMoneyBill1 } from "react-icons/fa6";
->>>>>>> 7ba1bcddbc49b927c790f593fe92dada87ebe39f
 import { BsTicketDetailed } from "react-icons/bs";
 import axiosInstance from "../../../../axiosConfig";
 import moment from "moment/moment";
 import DateCard from "../../../components/MainComponents/DateCard";
-<<<<<<< HEAD
 import { useCallback, useEffect, useReducer, useState } from "react";
 import useMoviesShowDate from "../../../hooks/useMoviesShowDate";
 import MovieCard from "../../../components/MainComponents/MovieCard";
 import ScheduleTimeCard from "../../../components/MainComponents/ScheduleTimeCard";
 import SeatTypePriceCard from "../../../components/MainComponents/SeatTypePriceCard";
 import useTimeCount from "../../../hooks/useTimeCount";
-=======
-import { useEffect, useState } from "react";
-import useMoviesShowDate from "../../../hooks/useMoviesShowDate";
-import MovieCard from "../../../components/MainComponents/MovieCard";
->>>>>>> 7ba1bcddbc49b927c790f593fe92dada87ebe39f
+import { toast } from "react-toastify";
 
 const TicketBookingPage = () => {
     const [movies, setMovies] = useState(null)
     const [scheduleTime, setScheduleTime] = useState(null)
-<<<<<<< HEAD
+    const [selectedScheduleTime, setSelectedScheduleTime] = useState(null)
     const [seatTypesPrice, setSeatTypesPrice] = useState(null)
-    const [selectSeatType, setSelectSeatType] = useState(null)
-    const [totalTicket, setTotalTicket] = useState(0)
+    const [selectedSeatType, setSelectedSeatType] = useState(null)
+    const [ticketQuantity, setTicketQuantity] = useState(0)
     const [seats, setSeats] = useState(Array(50).fill(false));
-    const displayTime=useTimeCount(totalTicket)
+    const displayTime=useTimeCount(ticketQuantity)
     const [selectedSeat, setSelectedSeat] = useState([])
+    const [totalAmount, setTotalAmount] = useState(null)
 
-
-    const array2 = [{ id: 1, seat: 'A1' }, { id: 1, seat: 'C4' }]
+useEffect(()=>{
+    if (ticketQuantity>0) {
+        setTotalAmount(ticketQuantity*selectedSeatType?.price)
+    }
+},[ticketQuantity])
     
 
 
@@ -41,38 +36,52 @@ const TicketBookingPage = () => {
             .then(res => setMovies(res.data))
         setScheduleTime(null)
         setSeatTypesPrice(null)
-        setSelectSeatType(null)
+        setSelectedSeatType(null)
     }, [])
     const handleScheduleTime = useCallback((_id) => {
-
+        console.log('seat1');
         axiosInstance.get(`/show/active-movie-by-id/${_id}`)
             .then(res => setScheduleTime(res.data))
+        
         setSeatTypesPrice(null)
-        setSelectSeatType(null)
+        setSelectedSeatType(null)
+        setTotalAmount(null)
     }, [])
-    const handleSeatType = useCallback((showId, timeTypePriceId) => {
+    const handleSeatType = useCallback((showId, timeTypePriceId,showTime) => {
+        console.log('seat2');
+        setSelectedScheduleTime(showTime)
         axiosInstance.get(`/show/active-movie-seat-type-by-id/?showId=${showId}&timeTypePriceId=${timeTypePriceId}`)
             .then(res => setSeatTypesPrice(res.data.showTimesTypesPrice[0].seatTypesPrice))
-        setSelectSeatType(null)
-        setTotalTicket(0)
-    }, [])
-    const handleTotalTicketPlus = () => {
-        if (totalTicket == 10) {
+        setSelectedSeatType(null)
+        setTicketQuantity(0)
+        setTotalAmount(null)
+    }, [ticketQuantity])
+    console.log(ticketQuantity);
+    const handleticketQuantityPlus = () => {
+        if (ticketQuantity == 10) {
+            return
+        }
+        setTicketQuantity((prevCount) => prevCount + 1)
+        
+    }
+    const handleticketQuantityMinus = () => {
+        if (ticketQuantity == 0) {
             return
         }
         
-        setTotalTicket((prevCount) => prevCount + 1)
+        setTicketQuantity((prevCount) => prevCount - 1)
+        setSelectedSeat([])
     }
-    const handleTotalTicketMinus = () => {
-        if (totalTicket == 0) {
+    
+    const handleSeatBooking=useCallback((seat)=>{
+        if (ticketQuantity==selectedSeat.length) {
+            toast.error('You selected max amount of ticket')
             return
         }
         
-        setTotalTicket((prevCount) => prevCount - 1)
-    }
-    const handleSeatBooking=(seat)=>{
-        console.log(seat);
-    }
+        const newSeat=[seat,...selectedSeat]
+        setSelectedSeat(newSeat)
+    },[ticketQuantity,selectedSeat,totalAmount])
     return (
         <div className="my-container my-24">
             <div className="flex flex-col md:flex-row gap-7  ">
@@ -87,24 +96,24 @@ const TicketBookingPage = () => {
                     </div>
 
                     {scheduleTime && <div className="mb-9">
-                        <ScheduleTimeCard showTimesTypesPrice={scheduleTime?.showTimesTypesPrice} handleSeatType={handleSeatType} scheduleTime={scheduleTime} />
+                        <ScheduleTimeCard showTimesTypesPrice={scheduleTime?.showTimesTypesPrice} handleSeatType={handleSeatType} scheduleTime={scheduleTime} selectedScheduleTime={selectedScheduleTime}/>
 
                     </div>}
 
                     {
                         seatTypesPrice && <div className="mb-9 flex gap-7">
                             <div className="basis-3/5 ">
-                                <SeatTypePriceCard seatTypesPrice={seatTypesPrice} setSelectSeatType={setSelectSeatType} selectSeatType={selectSeatType} />
+                                <SeatTypePriceCard seatTypesPrice={seatTypesPrice} setSelectedSeatType={setSelectedSeatType} selectedSeatType={selectedSeatType} setTotalAmount={setTotalAmount} setTicketQuantity={setTicketQuantity}/>
 
                             </div>
                             {
-                                selectSeatType && <div className="basis-2/5">
+                                selectedSeatType && <div className="basis-2/5">
                                     <h3 className="text-2xl font-semibold  mb-3">Ticket Quantity</h3>
 
                                     <div className="flex items-center justify-center gap-5  bg-white rounded-md py-6">
-                                        <button className="btn btn-sm" onClick={() => handleTotalTicketMinus()}><FaMinus /></button>
-                                        <p><span className="text-lg font-bold">{totalTicket}   Tickets </span><br /><span className="text-xs">Mas 10 Tickets</span> </p>
-                                        <button className="btn btn-sm btn-primary" onClick={() => handleTotalTicketPlus()}><FaPlus /></button>
+                                        <button className="btn btn-sm" onClick={() => handleticketQuantityMinus()}><FaMinus /></button>
+                                        <p><span className="text-lg font-bold">{ticketQuantity}   Tickets </span><br /><span className="text-xs">Mas 10 Tickets</span> </p>
+                                        <button className="btn btn-sm btn-primary" onClick={() => handleticketQuantityPlus()}><FaPlus /></button>
 
                                     </div>
 
@@ -114,7 +123,7 @@ const TicketBookingPage = () => {
                         </div>
                     }
                    {
-                    totalTicket >0 &&  <div >
+                    ticketQuantity >0 &&  <div >
                        
                     <div className=" border-b-2 pb-4 mb-6">
                     <div className="flex justify-between ">
@@ -140,7 +149,7 @@ const TicketBookingPage = () => {
                                 const rowLabel = String.fromCharCode('A'.charCodeAt(0) + Math.floor(index / 10));
                                 const seatNumber = (index % 10) + 1;
                                 const seatLabel = `${rowLabel}${seatNumber}`;
-                                const matchedSeats = array2.find((element) => element.seat === seatLabel);
+                                const matchedSeats = selectedSeat.find((element) => element === seatLabel);
                                 return (<li key={index + 1} className={`btn btn-sm  ${matchedSeats ? "btn-warning" : ""} `} onClick={()=>handleSeatBooking(seatLabel)}>{seatLabel}</li>)
                             })
                         }
@@ -153,55 +162,6 @@ const TicketBookingPage = () => {
                 <aside className=" flex-none ">
                     <p className="text-2xl font-semibold mb-3">Tickets Summary</p>
                     <div className="w-full md:w-80  bg-white rounded-lg p-4 ">
-=======
-    console.log(scheduleTime);
-
-
-    const handleShowByDate = (date) => {
-        axiosInstance.get(`/show/active-movies-by-date?date=${date}`)
-            .then(res => setMovies(res.data))
-    }
-    const handleScheduleTime = (_id) => {
-        console.log(_id);
-        axiosInstance.get(`/show/active-movie-by-id/${_id}`)
-            .then(res => setScheduleTime(res.data))
-    }
-    return (
-        <div className="my-container my-24">
-            <div className="flex flex-col md:flex-row gap-7">
-                {/* Main Content */}
-                <div className="flex-1 ">
-                    <div className="mb-6">
-                        <h3 className="text-2xl font-semibold  mb-3">Select Date</h3>
-                        <div className="flex gap-3">
-                            <DateCard handleShowByDate={handleShowByDate} />
-                        </div>
-                    </div>
-                    <div className="mb-9">
-                        <h3 className="text-2xl font-semibold  mb-3">Select Movie ({movies?.length})</h3>
-                        <div className="flex gap-3">
-                            <MovieCard handleScheduleTime={handleScheduleTime} movies={movies} />
-                        </div>
-
-                    </div>
-
-                    {scheduleTime && <div>
-                        <h3 className="text-2xl font-semibold  mb-3">Select Show Time</h3>
-                        <div className="flex items-center bg-white rounded-md px-3 py-7">
-                            <p className="flex-1 text-xl font-semibold">Hall</p>
-                            <div className="flex gap-2" >
-                                {
-                                    scheduleTime?.showTimesTypesPrice?.map(element => <div key={element._id} className="border rounded-md px-4 py-1">{element.time.value}</div>)
-                                }
-                            </div>
-                        </div>
-                    </div>}
-                </div>
-                {/* Sidebar */}
-                <aside className="flex-none ">
-                    <p className="text-2xl font-semibold mb-3">Tickets Summary</p>
-                    <div className="w-full md:w-80  bg-white rounded-lg p-4">
->>>>>>> 7ba1bcddbc49b927c790f593fe92dada87ebe39f
                         <div className="p-4">
                             <h1 className="text-2xl font-bold">Sidebar</h1>
                         </div>
@@ -216,23 +176,25 @@ const TicketBookingPage = () => {
                             </div>
                             <div className="flex  mt-4">
                                 <p className="flex items-center gap-3 grow"> <FaRegClock />Show Time</p>
-                                <p className="">2-3-2</p>
+                                <p className="">{selectedScheduleTime?selectedScheduleTime:'--'}</p>
                             </div>
                             <div className="flex  mt-4">
                                 <p className="flex items-center gap-3 grow"> <FaChair />Seat Type</p>
-                                <p className="">2-3-2</p>
+                                <p className="">{selectedSeatType?selectedSeatType.seatType:'--'}</p>
                             </div>
                             <div className="flex mt-4">
                                 <p className="flex items-center gap-3 grow"> <BsTicketDetailed /> Ticket Quantity</p>
-                                <p className="">2-3-2</p>
+                                <p className="">{ticketQuantity?ticketQuantity:'--'}</p>
                             </div>
                             <div className="flex  mt-4">
                                 <p className="flex items-center gap-3 grow"> <FaChair />Selected Seat</p>
-                                <p className="">2-3-2</p>
+                                <p className="">{
+                                  selectedSeat?.length<=0?"--":selectedSeat.join(',')
+                                }</p>
                             </div>
                             <div className="flex  mt-4">
                                 <p className="flex items-center gap-3 grow"> <FaRegMoneyBill1 /> Total Amount</p>
-                                <p className="">2-3-2</p>
+                                <p className="">{totalAmount?`${totalAmount} BDT`:'--'}</p>
                             </div>
                         </div>
                         <form className="space-y-3 ">

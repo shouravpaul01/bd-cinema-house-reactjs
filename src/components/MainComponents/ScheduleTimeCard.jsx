@@ -1,7 +1,7 @@
 import React from "react";
 
 
-const ScheduleTimeCard = ({ showTimesTypesPrice,handleSeatType,scheduleTime }) => {
+const ScheduleTimeCard = ({ showTimesTypesPrice,handleSeatType,scheduleTime,selectedScheduleTime }) => {
     console.log('schedule time card');
     return (
         <>
@@ -10,7 +10,7 @@ const ScheduleTimeCard = ({ showTimesTypesPrice,handleSeatType,scheduleTime }) =
                 <p className="flex-1 text-xl font-semibold">Hall</p>
                 <div className="flex gap-2" >
                     {
-                        showTimesTypesPrice?.map(element => <div key={element._id} onClick={() => handleSeatType(scheduleTime._id, element._id)} className="border rounded-md px-4 py-1">{element.time.value}</div>)
+                        showTimesTypesPrice?.map(element => <div key={element._id} onClick={() => handleSeatType(scheduleTime._id, element._id,element.time.value)} className={`btn btn-sm ${selectedScheduleTime==element.time.value?'btn-primary':'btn-outline btn-primary'}`}>{element.time.value}</div>)
                     }
                 </div>
             </div>
