@@ -9,6 +9,7 @@ import AddShowPage from "../view/admin/Shows/AddShow/AddShowPage";
 import EditShowPage from "../view/admin/Shows/EditShow/EditShowPage";
 import TicketBookingPage from "../view/main/TicketBooking/TicketBookingPage";
 import SignInAndUp from "../view/main/SignInAndUp/SignInAndUP";
+import PrivateRoute from "./PrivateRoute";
 
 const router = createBrowserRouter([
     {
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '/ticket',
-                element: <TicketBookingPage />
+                element: <PrivateRoute><TicketBookingPage /></PrivateRoute>
             },
             {
                 path: '/signin',
