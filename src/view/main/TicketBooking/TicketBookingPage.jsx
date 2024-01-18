@@ -20,16 +20,16 @@ const TicketBookingPage = () => {
     const [selectedSeatType, setSelectedSeatType] = useState(null)
     const [ticketQuantity, setTicketQuantity] = useState(0)
     const [seats, setSeats] = useState(Array(50).fill(false));
-    const displayTime=useTimeCount(ticketQuantity)
+    const displayTime = useTimeCount(ticketQuantity)
     const [selectedSeat, setSelectedSeat] = useState([])
     const [totalAmount, setTotalAmount] = useState(null)
 
-useEffect(()=>{
-    if (ticketQuantity>0) {
-        setTotalAmount(ticketQuantity*selectedSeatType?.price)
-    }
-},[ticketQuantity])
-    
+    useEffect(() => {
+        if (ticketQuantity > 0) {
+            setTotalAmount(ticketQuantity * selectedSeatType?.price)
+        }
+    }, [ticketQuantity])
+
 
 
     const handleMoviesByDate = useCallback((date) => {
@@ -44,12 +44,12 @@ useEffect(()=>{
         console.log('seat1');
         axiosInstance.get(`/show/active-movie-by-id/${_id}`)
             .then(res => setScheduleTime(res.data))
-        
+
         setSeatTypesPrice(null)
         setSelectedSeatType(null)
         setTotalAmount(null)
     }, [])
-    const handleSeatType = useCallback((showId, timeTypePriceId,showTime) => {
+    const handleSeatType = useCallback((showId, timeTypePriceId, showTime) => {
         console.log('seat2');
         setSelectedScheduleTime(showTime)
         axiosInstance.get(`/show/active-movie-seat-type-by-id/?showId=${showId}&timeTypePriceId=${timeTypePriceId}`)
@@ -70,35 +70,36 @@ useEffect(()=>{
         if (ticketQuantity == 0) {
             return
         }
-        
+
         setTicketQuantity((prevCount) => prevCount - 1)
         setSelectedSeat([])
     }
-    
-    const handleSeatBooking=useCallback((seat)=>{
-        const matchedSeat=selectedSeat.filter((element) => element == seat);
-        if (matchedSeat.length>0) {
+
+    const handleSeatBooking = useCallback((seat) => {
+        const matchedSeat = selectedSeat.filter((element) => element == seat);
+        if (matchedSeat.length > 0) {
             handleSeatBookingbyDoubleClick(seat)
             return
         }
-        if (ticketQuantity==selectedSeat.length) {
+        if (ticketQuantity == selectedSeat.length) {
             toast.error('You selected max amount of ticket')
             return
         }
-        
-        const newSeat=[seat,...selectedSeat]
+
+        const newSeat = [seat, ...selectedSeat]
         setSelectedSeat(newSeat)
-    },[ticketQuantity,selectedSeat,totalAmount])
-    const handleSeatBookingbyDoubleClick=(seat)=>{
+    }, [ticketQuantity, selectedSeat, totalAmount])
+
+    const handleSeatBookingbyDoubleClick = (seat) => {
         const newSeat = selectedSeat.filter((element) => element !== seat);
         setSelectedSeat(newSeat)
-       // console.log(selectedSeat);
+        // console.log(selectedSeat);
     }
     return (
-        <div className="my-container my-24">
+        <div className="my-container py-24">
             <div className="flex flex-col md:flex-row gap-7  ">
                 {/* Main Content */}
-                <div className="flex-1 ">
+                <div className="flex-1 sticky top-2">
                     <div className="mb-6">
                         <DateCard handleMoviesByDate={handleMoviesByDate} />
 
@@ -108,14 +109,14 @@ useEffect(()=>{
                     </div>
 
                     {scheduleTime && <div className="mb-9">
-                        <ScheduleTimeCard showTimesTypesPrice={scheduleTime?.showTimesTypesPrice} handleSeatType={handleSeatType} scheduleTime={scheduleTime} selectedScheduleTime={selectedScheduleTime}/>
+                        <ScheduleTimeCard showTimesTypesPrice={scheduleTime?.showTimesTypesPrice} handleSeatType={handleSeatType} scheduleTime={scheduleTime} selectedScheduleTime={selectedScheduleTime} />
 
                     </div>}
 
                     {
                         seatTypesPrice && <div className="mb-9 flex gap-7">
                             <div className="basis-3/5 ">
-                                <SeatTypePriceCard seatTypesPrice={seatTypesPrice} setSelectedSeatType={setSelectedSeatType} selectedSeatType={selectedSeatType} setTotalAmount={setTotalAmount} setTicketQuantity={setTicketQuantity}/>
+                                <SeatTypePriceCard seatTypesPrice={seatTypesPrice} setSelectedSeatType={setSelectedSeatType} selectedSeatType={selectedSeatType} setTotalAmount={setTotalAmount} setTicketQuantity={setTicketQuantity} />
 
                             </div>
                             {
@@ -134,53 +135,53 @@ useEffect(()=>{
 
                         </div>
                     }
-                   {
-                    ticketQuantity >0 &&  <div >
-                       
-                    <div className=" border-b-2 pb-4 mb-6">
-                    <div className="flex justify-between ">
-                        <div className="border rounded-full flex items-center justify-center w-10 h-10  text-sm animate-pulse">
-                           {displayTime.minutes +':'+ displayTime.seconds}
-                        </div>
-                    <div className="flex gap-4 text-sm font-semibold">
-                        <div className="flex items-center gap-1"><span className="w-9 h-6 rounded bg-slate-100"></span>Available 
-                        </div>
-                        <div className="flex items-center gap-1"><span className="w-9 h-6 rounded bg-blue-800"></span>Selected 
-                        </div>
-                        <div className="flex  items-center gap-1"><span className="w-9 h-6 rounded bg-slate-100"></span>Not Available 
-                        </div>
-                    </div>  
-                        </div>
-                       
-                    </div>
-                   
-                    <ul className="grid grid-cols-10 gap-2">
-                        {
+                    {
+                        ticketQuantity > 0 && <div >
 
-                            seats.map((isSeatSelected, index) => {
-                                const rowLabel = String.fromCharCode('A'.charCodeAt(0) + Math.floor(index / 10));
-                                const seatNumber = (index % 10) + 1;
-                                const seatLabel = `${rowLabel}${seatNumber}`;
-                                const matchedSeats = selectedSeat.find((element) => element === seatLabel);
-                                return (<li key={index + 1} className={`btn btn-sm  ${matchedSeats ? "btn-warning" : ""} `} onClick={()=>handleSeatBooking(seatLabel)} onDoubleClick={()=>handleSeatBookingbyDoubleClick(seatLabel)}>{seatLabel}</li>)
-                            })
-                        }
+                            <div className=" border-b-2 pb-4 mb-6">
+                                <div className="flex justify-between ">
+                                    <div className="border rounded-full flex items-center justify-center w-10 h-10  text-sm animate-pulse">
+                                        {displayTime.minutes + ':' + displayTime.seconds}
+                                    </div>
+                                    <div className="flex gap-4 text-sm font-semibold">
+                                        <div className="flex items-center gap-1"><span className="w-9 h-6 rounded bg-slate-100"></span>Available
+                                        </div>
+                                        <div className="flex items-center gap-1"><span className="w-9 h-6 rounded bg-blue-800"></span>Selected
+                                        </div>
+                                        <div className="flex  items-center gap-1"><span className="w-9 h-6 rounded bg-slate-100"></span>Not Available
+                                        </div>
+                                    </div>
+                                </div>
 
-                    </ul>
-                </div>
-                   }
+                            </div>
+
+                            <ul className="grid grid-cols-10 gap-2">
+                                {
+
+                                    seats.map((isSeatSelected, index) => {
+                                        const rowLabel = String.fromCharCode('A'.charCodeAt(0) + Math.floor(index / 10));
+                                        const seatNumber = (index % 10) + 1;
+                                        const seatLabel = `${rowLabel}${seatNumber}`;
+                                        const matchedSeats = selectedSeat.find((element) => element === seatLabel);
+                                        return (<li key={index + 1} className={`btn btn-sm  ${matchedSeats ? "btn-warning" : ""} `} onClick={() => handleSeatBooking(seatLabel)} onDoubleClick={() => handleSeatBookingbyDoubleClick(seatLabel)}>{seatLabel}</li>)
+                                    })
+                                }
+
+                            </ul>
+                        </div>
+                    }
                 </div>
                 {/* Sidebar */}
                 <aside className=" flex-none ">
                     <p className="text-2xl font-semibold mb-3">Tickets Summary</p>
-                    <div className="w-full md:w-80  bg-white rounded-lg p-4 ">
+                    <div className="md:sticky md:top-0 w-full md:w-80  bg-white rounded-lg p-4 ">
                         <div className="p-4">
                             <h1 className="text-2xl font-bold">Sidebar</h1>
                         </div>
                         <div className="my-4">
                             <div className="flex mt-4">
                                 <p className="flex items-center gap-3 grow"> <FaCalendarDays /> Show Date</p>
-                                <p className="">{selectedDate?moment(selectedDate).format('ll'):'--'}</p>
+                                <p className="">{selectedDate ? moment(selectedDate).format('ll') : '--'}</p>
                             </div>
                             <div className="flex  mt-4">
                                 <p className="flex items-center gap-3 grow"> <FaCalendarDays /> Hall Name</p>
@@ -188,25 +189,25 @@ useEffect(()=>{
                             </div>
                             <div className="flex  mt-4">
                                 <p className="flex items-center gap-3 grow"> <FaRegClock />Show Time</p>
-                                <p className="">{selectedScheduleTime?selectedScheduleTime:'--'}</p>
+                                <p className="">{selectedScheduleTime ? selectedScheduleTime : '--'}</p>
                             </div>
                             <div className="flex  mt-4">
                                 <p className="flex items-center gap-3 grow"> <FaChair />Seat Type</p>
-                                <p className="">{selectedSeatType?selectedSeatType.seatType:'--'}</p>
+                                <p className="">{selectedSeatType ? selectedSeatType.seatType : '--'}</p>
                             </div>
                             <div className="flex mt-4">
                                 <p className="flex items-center gap-3 grow"> <BsTicketDetailed /> Ticket Quantity</p>
-                                <p className="">{ticketQuantity?ticketQuantity:'--'}</p>
+                                <p className="">{ticketQuantity ? ticketQuantity : '--'}</p>
                             </div>
                             <div className="flex  mt-4">
                                 <p className="flex items-center gap-3 grow"> <FaChair />Selected Seat</p>
                                 <p className="">{
-                                  selectedSeat?.length<=0?"--":selectedSeat.join(',')
+                                    selectedSeat?.length <= 0 ? "--" : selectedSeat.join(',')
                                 }</p>
                             </div>
                             <div className="flex  mt-4">
                                 <p className="flex items-center gap-3 grow"> <FaRegMoneyBill1 /> Total Amount</p>
-                                <p className="">{totalAmount?`${totalAmount} BDT`:'--'}</p>
+                                <p className="">{totalAmount ? `${totalAmount} BDT` : '--'}</p>
                             </div>
                         </div>
                         <form className="space-y-3 ">

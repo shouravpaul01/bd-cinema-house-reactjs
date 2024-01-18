@@ -8,6 +8,7 @@ import ShowsPage from "../view/admin/Shows/ShowsPage";
 import AddShowPage from "../view/admin/Shows/AddShow/AddShowPage";
 import EditShowPage from "../view/admin/Shows/EditShow/EditShowPage";
 import TicketBookingPage from "../view/main/TicketBooking/TicketBookingPage";
+import SignInAndUp from "../view/main/SignInAndUp/SignInAndUP";
 
 const router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
             {
                 path: '/ticket',
                 element: <TicketBookingPage />
+            },
+            {
+                path: '/signin',
+                element: <SignInAndUp />
             }
         ]
     },

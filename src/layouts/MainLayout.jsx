@@ -4,7 +4,7 @@ import { ToastContainer } from "react-toastify";
 
 const MainLayout = () => {
     return (
-        <div className="bg-pink-50">
+        <div className="bg-pink-100">
             <Outlet />
             <ToastContainer
                 position="top-right"

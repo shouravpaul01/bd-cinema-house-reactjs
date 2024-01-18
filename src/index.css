@@ -5,3 +5,9 @@
 .my-container{
     @apply px-2 md:max-w-screen-md md:px-5 lg:max-w-screen-lg  mx-auto
 }
+.tab{
+    @apply text-base font-semibold h-10  hover:bg-indigo-500 hover:text-white
+}
+.label-text{
+    @apply text-base
+}
