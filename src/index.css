@@ -2,12 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
-.my-container{
-    @apply px-2 md:max-w-screen-md md:px-5 lg:max-w-screen-lg  mx-auto
+@keyframes custom-animation {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
-.tab{
-    @apply text-base font-semibold h-10  hover:bg-indigo-500 hover:text-white
+.animate-custom {
+    animation: custom-animation 0.5s ease-in-out;
 }
-.label-text{
+
+.my-container {
+    @apply px-2 md:max-w-screen-md md:px-5 lg:max-w-screen-lg mx-auto
+}
+
+
+.active-link-signin {
+    @apply btn btn-sm btn-primary rounded-full w-full
+}
+
+.menu-item:hover {
+    @apply block border-b-2 border-red-700 font-bold
+}
+
+.active-link {
+    @apply block border-b-2 border-red-700 font-bold
+}
+
+.mobile-menu-active-link {
+    @apply bg-indigo-500 text-white
+}
+
+.tab {
+    @apply text-base font-semibold h-10 hover:bg-indigo-500 hover:text-white
+}
+
+.label-text {
     @apply text-base
 }

@@ -1,13 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { FaRebel } from "react-icons/fa6";
 import { useState } from "react";
 import SignInForm from "../../../components/CommonComponents/SignInForm";
 import SignUpForm from "../../../components/CommonComponents/SignUpForm";
+import useAuth from "../../../hooks/useAuth";
 
 
 const SignInAndUp = () => {
     const [tabActive,setTabActive]=useState('signin')
-    console.log(tabActive);
+    const {user}=useAuth()
+    //the not showing if user sign in
+    if (user) {
+       return <Navigate to={'/'}/>
+    }
     return (
         <section className="my-container py-24 flex justify-center ">
             

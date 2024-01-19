@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import axios from "axios";
 import axiosInstance from "../../../axiosConfig";
@@ -11,6 +11,10 @@ const SignUpForm = () => {
     const [showPassword, setShowPassword] = useState(false)
     const { register, handleSubmit, reset, control, watch, setValue, setError, formState: { errors } } = useForm()
     const { signUp } = useAuth()
+    const navigate = useNavigate()
+    const location = useLocation()
+    const currentLocation = location?.state?.from?.pathname || '/'
+
     const handleSignUp = (data) => {
         signUp(data.email,data.password)
         .then(()=>{
@@ -27,6 +31,7 @@ const SignUpForm = () => {
                     })
                 }
                 if (res.data.code == 200) {
+                    navigate(currentLocation,{replace:true})
                     toast.success(res.data.message)
                     reset()
                 }

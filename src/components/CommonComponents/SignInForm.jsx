@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
 
@@ -10,9 +10,14 @@ const SignInForm = () => {
     const { register, handleSubmit, reset, control, watch, setValue, setError, formState: { errors } } = useForm()
     const [showPassword,setShowPassword]=useState(false)
     const { signIn } = useAuth()
+    const navigate = useNavigate()
+    const location = useLocation()
+    const currentLocation = location?.state?.from?.pathname || '/'
+    
     const handleSignIn = (data) => {
         signIn(data.email,data.password)
         .then(()=>{
+           navigate(currentLocation,{replace:true})
            toast.success('Successfully Sign in.')
            reset()
         })

@@ -1,10 +1,12 @@
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import Header from "../components/MainComponents/Header";
 
 
 const MainLayout = () => {
     return (
-        <div className="bg-pink-100">
+        <div className="">
+            <Header/>
             <Outlet />
             <ToastContainer
                 position="top-right"

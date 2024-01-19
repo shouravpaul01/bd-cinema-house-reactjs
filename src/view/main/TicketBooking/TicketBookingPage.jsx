@@ -23,6 +23,9 @@ const TicketBookingPage = () => {
     const displayTime = useTimeCount(ticketQuantity)
     const [selectedSeat, setSelectedSeat] = useState([])
     const [totalAmount, setTotalAmount] = useState(null)
+    const [bookingId, setBookingId] = useState(null)
+
+    console.log('bookingId', bookingId);
 
     useEffect(() => {
         if (ticketQuantity > 0) {
@@ -72,29 +75,63 @@ const TicketBookingPage = () => {
         }
 
         setTicketQuantity((prevCount) => prevCount - 1)
+        // handleDeleteBooking()
         setSelectedSeat([])
     }
 
     const handleSeatBooking = useCallback((seat) => {
+        const newSeat = [seat, ...selectedSeat]
+        const data = { date: selectedDate, time: selectedScheduleTime, seatType: selectedSeatType.seatType, seat: newSeat, totalAmount: totalAmount }
+
         const matchedSeat = selectedSeat.filter((element) => element == seat);
         if (matchedSeat.length > 0) {
-            handleSeatBookingbyDoubleClick(seat)
+            if (bookingId) {
+                handleDeleteBooking(seat)
+            }
             return
         }
         if (ticketQuantity == selectedSeat.length) {
             toast.error('You selected max amount of ticket')
             return
         }
+        if (bookingId && selectedSeat.length >= 1) {
+            axiosInstance.patch(`/booking/${bookingId}`, data)
+                .then(res => {
+                    console.log(res);
+                    setBookingId(res.data._id)
+                })
 
-        const newSeat = [seat, ...selectedSeat]
-        setSelectedSeat(newSeat)
-    }, [ticketQuantity, selectedSeat, totalAmount])
+            setSelectedSeat(newSeat)
+            return
+        }
+        if (!bookingId) {
+            axiosInstance.post('/booking', data)
+                .then(res => {
+                    console.log(res);
+                    setBookingId(res.data._id)
+                })
 
-    const handleSeatBookingbyDoubleClick = (seat) => {
-        const newSeat = selectedSeat.filter((element) => element !== seat);
-        setSelectedSeat(newSeat)
-        // console.log(selectedSeat);
+            setSelectedSeat(newSeat)
+        }
+
+    }, [ticketQuantity, selectedSeat, totalAmount, bookingId])
+
+    const handleDeleteBooking = () => {
+        const deleteSeat = selectedSeat.filter((element) => element !== seat);
+        axiosInstance.delete(`/booking/${bookingId}`)
+            .then(res => {
+                setBookingId(null)
+                setSelectedSeat(deleteSeat)
+                console.log(res, 'delete');
+            })
     }
+    // const handleSeatBookingbyDoubleClick = (seat) => {
+    //     console.log('handleSeatBookingbyDoubleClick');
+
+
+
+    //     // console.log(selectedSeat);
+    // }
     return (
         <div className="my-container py-24">
             <div className="flex flex-col md:flex-row gap-7  ">
@@ -163,7 +200,7 @@ const TicketBookingPage = () => {
                                         const seatNumber = (index % 10) + 1;
                                         const seatLabel = `${rowLabel}${seatNumber}`;
                                         const matchedSeats = selectedSeat.find((element) => element === seatLabel);
-                                        return (<li key={index + 1} className={`btn btn-sm  ${matchedSeats ? "btn-warning" : ""} `} onClick={() => handleSeatBooking(seatLabel)} onDoubleClick={() => handleSeatBookingbyDoubleClick(seatLabel)}>{seatLabel}</li>)
+                                        return (<li key={index + 1} className={`btn btn-sm  ${matchedSeats ? "btn-warning" : ""} `} onClick={() => handleSeatBooking(seatLabel)} >{seatLabel}</li>)
                                     })
                                 }
 
