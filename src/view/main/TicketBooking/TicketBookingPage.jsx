@@ -23,9 +23,9 @@ const TicketBookingPage = () => {
     const displayTime = useTimeCount(ticketQuantity)
     const [selectedSeat, setSelectedSeat] = useState([])
     const [totalAmount, setTotalAmount] = useState(null)
-    const [bookingId, setBookingId] = useState(null)
+    const [booking, setBooking] = useState(null)
 
-    console.log('bookingId', bookingId);
+    console.log('booking', booking);
 
     useEffect(() => {
         if (ticketQuantity > 0) {
@@ -75,7 +75,7 @@ const TicketBookingPage = () => {
         }
 
         setTicketQuantity((prevCount) => prevCount - 1)
-        // handleDeleteBooking()
+        handleDeleteBooking()
         setSelectedSeat([])
     }
 
@@ -85,7 +85,7 @@ const TicketBookingPage = () => {
 
         const matchedSeat = selectedSeat.filter((element) => element == seat);
         if (matchedSeat.length > 0) {
-            if (bookingId) {
+            if (booking) {
                 handleDeleteBooking(seat)
             }
             return
@@ -94,36 +94,50 @@ const TicketBookingPage = () => {
             toast.error('You selected max amount of ticket')
             return
         }
-        if (bookingId && selectedSeat.length >= 1) {
-            axiosInstance.patch(`/booking/${bookingId}`, data)
+        if (booking && selectedSeat.length >= 1) {
+            axiosInstance.patch(`/booking/${booking?._id}`, data)
                 .then(res => {
                     console.log(res);
-                    setBookingId(res.data._id)
+                    setBooking(res.data)
                 })
 
             setSelectedSeat(newSeat)
             return
         }
-        if (!bookingId) {
+        if (!booking) {
             axiosInstance.post('/booking', data)
                 .then(res => {
                     console.log(res);
-                    setBookingId(res.data._id)
+                    setBooking(res.data)
                 })
 
             setSelectedSeat(newSeat)
         }
 
-    }, [ticketQuantity, selectedSeat, totalAmount, bookingId])
+    }, [ticketQuantity, selectedSeat, totalAmount, booking])
 
-    const handleDeleteBooking = () => {
-        const deleteSeat = selectedSeat.filter((element) => element !== seat);
-        axiosInstance.delete(`/booking/${bookingId}`)
+    const handleDeleteBooking = (seat) => {
+        
+        if (booking && seat) {
+           console.log(seat);
+            // const deleteSeat = selectedSeat.filter((element) => element !== seat);
+            axiosInstance.delete(`/booking?bookingId=${booking?._id}&seat=${seat}`)
             .then(res => {
-                setBookingId(null)
-                setSelectedSeat(deleteSeat)
+                setBooking(res.data)
+                setSelectedSeat(res.data.seat)
                 console.log(res, 'delete');
             })
+        }
+      if (booking && !seat) {
+        console.log('hhyyyyyyyyy');
+        axiosInstance.delete(`/booking?bookingId=${booking?._id}`)
+            .then(res => {
+                setBooking(null)
+                setSelectedSeat([])
+                console.log(res, 'delete');
+            })
+      }
+        
     }
     // const handleSeatBookingbyDoubleClick = (seat) => {
     //     console.log('handleSeatBookingbyDoubleClick');
