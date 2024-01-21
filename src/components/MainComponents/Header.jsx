@@ -60,7 +60,7 @@ const Header = () => {
     const navLink = user ? afterSignInNavLink : beforeSignInNavLink;
     return (
         <>
-            <header className="my-container pt-3">
+            <header className="my-container pt-3 sticky top-0 z-10">
 
                 <div className="drawer">
                     <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />

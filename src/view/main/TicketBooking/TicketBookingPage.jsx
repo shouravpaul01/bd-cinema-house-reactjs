@@ -10,6 +10,8 @@ import ScheduleTimeCard from "../../../components/MainComponents/ScheduleTimeCar
 import SeatTypePriceCard from "../../../components/MainComponents/SeatTypePriceCard";
 import useTimeCount from "../../../hooks/useTimeCount";
 import { toast } from "react-toastify";
+import deleteBooking from "../../../utils/deleteBooking";
+import TicketBookingSideBar from "../../../components/MainComponents/TicketBookingSideBar";
 
 const TicketBookingPage = () => {
     const [movies, setMovies] = useState(null)
@@ -20,18 +22,25 @@ const TicketBookingPage = () => {
     const [selectedSeatType, setSelectedSeatType] = useState(null)
     const [ticketQuantity, setTicketQuantity] = useState(0)
     const [seats, setSeats] = useState(Array(50).fill(false));
-    const displayTime = useTimeCount(ticketQuantity)
+    const { displayTime, time } = useTimeCount(ticketQuantity)
     const [selectedSeat, setSelectedSeat] = useState([])
     const [totalAmount, setTotalAmount] = useState(null)
     const [booking, setBooking] = useState(null)
 
-    console.log('booking', booking);
+    console.log('booking', time);
 
     useEffect(() => {
-        if (ticketQuantity > 0) {
+        if (ticketQuantity >= 0) {
             setTotalAmount(ticketQuantity * selectedSeatType?.price)
         }
-    }, [ticketQuantity])
+        if (time <= 0) {
+            deleteBooking(booking).then(res => {
+                setBooking(null)
+                setSelectedSeat([])
+            })
+        }
+
+    }, [ticketQuantity, time])
 
 
 
@@ -67,16 +76,19 @@ const TicketBookingPage = () => {
             return
         }
         setTicketQuantity((prevCount) => prevCount + 1)
+        handleDeleteBooking()
         setSelectedSeat([])
     }
     const handleticketQuantityMinus = () => {
         if (ticketQuantity == 0) {
+            setTotalAmount(null)
             return
         }
 
         setTicketQuantity((prevCount) => prevCount - 1)
         handleDeleteBooking()
         setSelectedSeat([])
+        
     }
 
     const handleSeatBooking = useCallback((seat) => {
@@ -117,35 +129,28 @@ const TicketBookingPage = () => {
     }, [ticketQuantity, selectedSeat, totalAmount, booking])
 
     const handleDeleteBooking = (seat) => {
-        
+        //A seat deleted to selected multiple seats
         if (booking && seat) {
-           console.log(seat);
             // const deleteSeat = selectedSeat.filter((element) => element !== seat);
             axiosInstance.delete(`/booking?bookingId=${booking?._id}&seat=${seat}`)
-            .then(res => {
-                setBooking(res.data)
-                setSelectedSeat(res.data.seat)
-                console.log(res, 'delete');
-            })
+                .then(res => {
+                    setBooking(res.data)
+                    setSelectedSeat(res.data.seat)
+                    console.log(res, 'delete');
+                })
         }
-      if (booking && !seat) {
-        console.log('hhyyyyyyyyy');
-        axiosInstance.delete(`/booking?bookingId=${booking?._id}`)
-            .then(res => {
-                setBooking(null)
-                setSelectedSeat([])
-                console.log(res, 'delete');
-            })
-      }
-        
+        //Booking deleted
+        if (booking && !seat) {
+            deleteBooking(booking)
+                .then(res => {
+                    setBooking(null)
+                    setSelectedSeat([])
+                })
+
+        }
+
     }
-    // const handleSeatBookingbyDoubleClick = (seat) => {
-    //     console.log('handleSeatBookingbyDoubleClick');
-
-
-
-    //     // console.log(selectedSeat);
-    // }
+   
     return (
         <div className="my-container py-24">
             <div className="flex flex-col md:flex-row gap-7  ">
@@ -191,7 +196,7 @@ const TicketBookingPage = () => {
 
                             <div className=" border-b-2 pb-4 mb-6">
                                 <div className="flex justify-between ">
-                                    <div className="border rounded-full flex items-center justify-center w-10 h-10  text-sm animate-pulse">
+                                    <div className={`border ${time<=60?'border-red-500 animate-pulse text-red-500':''} rounded-full flex items-center justify-center w-10 h-10  text-sm `}>
                                         {displayTime.minutes + ':' + displayTime.seconds}
                                     </div>
                                     <div className="flex gap-4 text-sm font-semibold">
@@ -225,49 +230,7 @@ const TicketBookingPage = () => {
                 {/* Sidebar */}
                 <aside className=" flex-none ">
                     <p className="text-2xl font-semibold mb-3">Tickets Summary</p>
-                    <div className="md:sticky md:top-0 w-full md:w-80  bg-white rounded-lg p-4 ">
-                        <div className="p-4">
-                            <h1 className="text-2xl font-bold">Sidebar</h1>
-                        </div>
-                        <div className="my-4">
-                            <div className="flex mt-4">
-                                <p className="flex items-center gap-3 grow"> <FaCalendarDays /> Show Date</p>
-                                <p className="">{selectedDate ? moment(selectedDate).format('ll') : '--'}</p>
-                            </div>
-                            <div className="flex  mt-4">
-                                <p className="flex items-center gap-3 grow"> <FaCalendarDays /> Hall Name</p>
-                                <p className="">2-3-2</p>
-                            </div>
-                            <div className="flex  mt-4">
-                                <p className="flex items-center gap-3 grow"> <FaRegClock />Show Time</p>
-                                <p className="">{selectedScheduleTime ? selectedScheduleTime : '--'}</p>
-                            </div>
-                            <div className="flex  mt-4">
-                                <p className="flex items-center gap-3 grow"> <FaChair />Seat Type</p>
-                                <p className="">{selectedSeatType ? selectedSeatType.seatType : '--'}</p>
-                            </div>
-                            <div className="flex mt-4">
-                                <p className="flex items-center gap-3 grow"> <BsTicketDetailed /> Ticket Quantity</p>
-                                <p className="">{ticketQuantity ? ticketQuantity : '--'}</p>
-                            </div>
-                            <div className="flex  mt-4">
-                                <p className="flex items-center gap-3 grow"> <FaChair />Selected Seat</p>
-                                <p className="">{
-                                    selectedSeat?.length <= 0 ? "--" : selectedSeat.join(',')
-                                }</p>
-                            </div>
-                            <div className="flex  mt-4">
-                                <p className="flex items-center gap-3 grow"> <FaRegMoneyBill1 /> Total Amount</p>
-                                <p className="">{totalAmount ? `${totalAmount} BDT` : '--'}</p>
-                            </div>
-                        </div>
-                        <form className="space-y-3 ">
-                            <label >Ticket For</label>
-                            <input type="text" className="input input-sm input-bordered input-primary w-full" placeholder="Full Name" />
-                            <input type="text" className="input input-sm input-bordered input-primary w-full" placeholder="Phone Number" />
-                            <button type="submit" className="btn btn-sm btn-primary w-full">Purchase Ticket</button>
-                        </form>
-                    </div>
+                    <TicketBookingSideBar selectedDate={selectedDate} selectedScheduleTime={selectedScheduleTime} selectedSeatType={selectedSeatType} ticketQuantity={ticketQuantity} selectedSeat={selectedSeat} totalAmount={totalAmount} bookingId={booking?._id} />
                 </aside>
             </div>
         </div>
