@@ -1,10 +1,7 @@
-import { FaCalendarDays, FaChair, FaMinus, FaPlus, FaRegClock, FaRegMoneyBill1 } from "react-icons/fa6";
-import { BsTicketDetailed } from "react-icons/bs";
+import { FaMinus, FaPlus } from "react-icons/fa6";
 import axiosInstance from "../../../../axiosConfig";
-import moment from "moment/moment";
 import DateCard from "../../../components/MainComponents/DateCard";
-import { useCallback, useEffect, useReducer, useState } from "react";
-import useMoviesShowDate from "../../../hooks/useMoviesShowDate";
+import { useCallback, useEffect, useState } from "react";
 import MovieCard from "../../../components/MainComponents/MovieCard";
 import ScheduleTimeCard from "../../../components/MainComponents/ScheduleTimeCard";
 import SeatTypePriceCard from "../../../components/MainComponents/SeatTypePriceCard";

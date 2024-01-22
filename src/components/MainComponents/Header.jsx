@@ -1,5 +1,4 @@
 import { Link, NavLink } from "react-router-dom";
-import { FiSearch } from "react-icons/fi";
 import { FaAngleDown, FaAngleUp, FaArrowRightFromBracket, FaHouse, FaUserShield } from "react-icons/fa6";
 import useAuth from "../../hooks/useAuth";
 import useClaintUser from "../../hooks/useClaintUser";

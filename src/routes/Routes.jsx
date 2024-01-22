@@ -10,6 +10,8 @@ import EditShowPage from "../view/admin/Shows/EditShow/EditShowPage";
 import TicketBookingPage from "../view/main/TicketBooking/TicketBookingPage";
 import SignInAndUp from "../view/main/SignInAndUp/SignInAndUP";
 import PrivateRoute from "./PrivateRoute";
+import BookingSuccessPage from "../view/main/TicketBooking/BookingSuccessPage";
+import BookingCencelPage from "../view/main/TicketBooking/BookingCencelPage";
 
 const router = createBrowserRouter([
     {
@@ -24,6 +26,14 @@ const router = createBrowserRouter([
             {
                 path: '/ticket',
                 element: <PrivateRoute><TicketBookingPage /></PrivateRoute>
+            },
+            {
+                path: '/ticket-booking/success/:bookingId',
+                element: <PrivateRoute><BookingSuccessPage/></PrivateRoute>
+            },
+            {
+                path: '/ticket-booking/cencel/:bookingId',
+                element: <PrivateRoute><BookingCencelPage/></PrivateRoute>
             },
             {
                 path: '/signin',
