@@ -61,7 +61,7 @@ const ShowTable = () => {
                         {
                             moviesShow?.map((show, index) => <tr key={show._id}>
                                 <th>{index + 1}</th>
-                                <td>{show.movie.name}</td>
+                                <td>{show.movie?.name}</td>
                                 <td>{moment(show.date).format('DD-MMM-YYYY')}</td>
                                 <td className="flex items-center gap-2">{show.showTimesTypesPrice.map((element, index) => <MovieShowTimes key={index + 1} element={element} index={index} showId={show._id} />)}
                                     <Link to={{

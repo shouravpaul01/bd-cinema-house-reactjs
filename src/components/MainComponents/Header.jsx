@@ -44,8 +44,9 @@ const Header = () => {
                     <span className="pe-1">{isOpenDropdown ? <FaAngleDown /> : <FaAngleUp />}</span></label>
                 {
                     isOpenDropdown && <ul tabIndex={0} onClick={() => setIsOpenDropdown(!isOpenDropdown)} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 border-e border-indigo-400 animate-custom mt-3 w-52 ">
-                        <li><NavLink to={`${claintUser ? '/user/setting' : 'dashboard'}`} className={({ isActive }) => isActive ? 'active-link' : ''}><FaHouse /> Dashboard</NavLink></li>
+                        <li><NavLink to={`${claintUser ? '/user/setting' : '/my-booking'}`} className={({ isActive }) => isActive ? 'active-link' : ''}><FaHouse /> My Booking</NavLink></li>
                         <li>
+                        
                             <button onClick={() => handleLogout()} className="flex items-center space-x-2px-4"><FaArrowRightFromBracket /><span>Logout</span>
                             </button>
                         </li>
