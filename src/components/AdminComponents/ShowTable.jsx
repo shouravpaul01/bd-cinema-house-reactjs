@@ -43,12 +43,12 @@ const ShowTable = () => {
         document.getElementById(_id).showModal()
     }
     return (
-        <>
-            <div className="overflow-y-visible">
-                <table className="table table-xs">
+        <section className="my-container pt-10 ">
+            <div className="overflow-x-auto">
+                <table className="table ">
                     {/* head */}
                     <thead>
-                        <tr>
+                        <tr className="text-sm">
                             <th></th>
                             <th>Name</th>
                             <th>Date</th>
@@ -89,7 +89,7 @@ const ShowTable = () => {
             {/* <Modal modalId={modalId} modalTitle={'Edit Movie'}>
                 <AddandEditShowFrom editData={editData} mutate={mutate} />
             </Modal> */}
-        </>
+        </section>
     );
 };
 

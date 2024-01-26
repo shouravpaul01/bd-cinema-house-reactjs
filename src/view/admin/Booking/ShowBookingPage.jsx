@@ -1,38 +1,42 @@
-import useAuth from "../../../hooks/useAuth";
-import useSWR from "swr";
 import moment from "moment";
+import useSWR from "swr";
+import Heading from "../../../components/AdminComponents/Heading";
+import { FaInfo } from "react-icons/fa6";
 
 const fetcher = (...args) => fetch(...args).then(res => res.json())
-const MyBookingPage = () => {
-    const { user } = useAuth()
-    const { data: myBookings = [], mutate } = useSWR(`http://localhost:3000/booking/my-booking?email=${user?.email}`, fetcher);
+const ShowBookingPage = () => {
+    const { data: allBooking = [], mutate } = useSWR(`http://localhost:3000/booking/all-booking`, fetcher);
 
     return (
-        <section className="my-container pt-10 py-20 ">
+        <>
+        <Heading title={'ALL Booking'} />
+        <section className="my-container pt-10 ">
 
-            <div className="overflow-x-auto md:px-10">
+            <div className="overflow-x-auto ">
                 <table className="table">
                     {/* head */}
                     <thead>
                         <tr className="text-sm">
                             <th>Order no</th>
                             <th>Movie Name</th>
-                            <th>Date</th>
+                            <th>Schedule Date</th>
                             <th>Show Time</th>
                             <th>Seat</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {/* Displayed all own booking */}
+                        {/* Displayed all booking */}
                         {
-                            myBookings ? myBookings.map((myBooking, index) => <tr key={myBooking?._id}>
+                            allBooking ? allBooking.map((booking, index) => <tr key={booking?._id}>
                                 <th>{index + 1}</th>
-                                <td>{myBooking?.movie?.name}</td>
-                                <td>{moment(myBooking?.date).format('ll')}</td>
-                                <td>{myBooking?.time}</td>
-                                <td>{myBooking?.seat?.join(',')}</td>
-                                <td><button className="btn btn-xs btn-primary">Ticket Print</button></td>
+                                <td>{booking?.movie?.name}</td>
+                                <td>{moment(booking?.date).format('ll')}</td>
+                                <td>{booking?.time}</td>
+                                <td>{booking?.seat?.join(',')}</td>
+                                <td>
+                                <button onClick={() => {}} className="btn btn-sm btn-circle btn-primary " ><FaInfo /></button>
+                                </td>
                             </tr>) : <div role="alert" className="alert">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-info shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 <span>Booking not found</span>
@@ -42,7 +46,8 @@ const MyBookingPage = () => {
                 </table>
             </div>
         </section>
+        </>
     );
 };
 
-export default MyBookingPage;
+export default ShowBookingPage;

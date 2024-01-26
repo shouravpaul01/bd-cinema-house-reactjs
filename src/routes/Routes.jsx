@@ -13,6 +13,7 @@ import PrivateRoute from "./PrivateRoute";
 import BookingSuccessPage from "../view/main/TicketBooking/BookingSuccessPage";
 import BookingCencelPage from "../view/main/TicketBooking/BookingCencelPage";
 import MyBookingPage from "../view/main/TicketBooking/MyBookingPage";
+import ShowBookingPage from "../view/admin/Booking/ShowBookingPage";
 
 const router = createBrowserRouter([
     {
@@ -30,15 +31,15 @@ const router = createBrowserRouter([
             },
             {
                 path: '/ticket-booking/success/:bookingId',
-                element: <PrivateRoute><BookingSuccessPage/></PrivateRoute>
+                element: <PrivateRoute><BookingSuccessPage /></PrivateRoute>
             },
             {
                 path: '/ticket-booking/cencel/:bookingId',
-                element: <PrivateRoute><BookingCencelPage/></PrivateRoute>
+                element: <PrivateRoute><BookingCencelPage /></PrivateRoute>
             },
             {
                 path: '/my-booking',
-                element: <PrivateRoute><MyBookingPage/></PrivateRoute>
+                element: <PrivateRoute><MyBookingPage /></PrivateRoute>
             },
             {
                 path: '/signin',
@@ -69,7 +70,11 @@ const router = createBrowserRouter([
             {
                 path: "/dashboard/show/edit",
                 element: <EditShowPage />
-            }
+            }, 
+            {
+                path: "/dashboard/all-booking",
+                element: <ShowBookingPage />
+            },
         ]
     }
 ])

@@ -48,7 +48,7 @@ const AdminLayout = () => {
             <div className="drawer-side">
                 <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
 
-                <ul className="menu gap-1 p-4 w-80 min-h-full bg-base-200 text-base-content">
+                <ul className="menu-item gap-1 p-4 w-80 min-h-full bg-base-200 text-base-content">
                     <div className="flex flex-col items-center mt-8 border-b-2">
 
                         <img src={profilePic} alt="profile" className="outline outline-2 outline-indigo-400 outline-offset-2 rounded-full w-24 h-24" />
@@ -59,9 +59,10 @@ const AdminLayout = () => {
 
                     </div>
                     {/* Sidebar content here */}
-                    <li><NavLink to={"/dashboard"} className={({ isActive }) => isActive ? "active" : ""}>Dashboard</NavLink></li>
-                    <li><NavLink to={'/dashboard/movies'} className={({ isActive }) => isActive ? "active" : ""}>Movies</NavLink></li>
-                    <li><NavLink to={'/dashboard/shows'} className={({ isActive }) => isActive ? "active" : ""}>Movie Shows</NavLink></li>
+                    <li><NavLink to={"/dashboard"} className={({ isActive }) => isActive ? "menu-item-active" : ""}>Dashboard</NavLink></li>
+                    <li><NavLink to={'/dashboard/movies'} className={({ isActive }) => isActive ? "menu-item-active" : ""}>Movies</NavLink></li>
+                    <li><NavLink to={'/dashboard/shows'} className={({ isActive }) => isActive ? "menu-item-active" : ""}>Movie Shows</NavLink></li>
+                    <li><NavLink to={'/dashboard/all-booking'} className={({ isActive }) => isActive ? "menu-item-active" : ""}>Booking</NavLink></li>
                 </ul>
 
             </div>

@@ -3,6 +3,7 @@ import useAuth from "../hooks/useAuth";
 import Loading from "../components/CommonComponents/Loading";
 
 
+
 const PrivateRoute = ({children}) => {
    const {user,isLoading}=useAuth()
    const location=useLocation()

@@ -21,7 +21,8 @@ const TicketBookingSideBar = ({ selectedDate, selectedMovie, selectedScheduleTim
         // console.log('pi') 
     }
     return (
-        <div className="md:sticky md:top-0 w-full md:w-80  bg-white rounded-lg p-4 ">
+
+        <div className="md:sticky md:top-20 w-full md:w-80  bg-white outline-dashed outline-1 outline-violet-900 rounded-lg px-4 py-8">
             <div className="flex gap-4">
                 {
                     selectedMovie ? <><div className=''>
@@ -48,33 +49,33 @@ const TicketBookingSideBar = ({ selectedDate, selectedMovie, selectedScheduleTim
             <div className="my-4">
                 <div className="flex mt-4">
                     <p className="flex items-center gap-3 grow"> <FaCalendarDays /> Show Date</p>
-                    <p className="">{selectedDate ? moment(selectedDate).format('ll') : '--'}</p>
+                    <p >{selectedDate ? moment(selectedDate).format('ll') : '--'}</p>
                 </div>
                 <div className="flex  mt-4">
                     <p className="flex items-center gap-3 grow"> <FaCalendarDays /> Hall Name</p>
-                    <p className="">BD-cinema-house</p>
+                    <p >BD-cinema-house</p>
                 </div>
                 <div className="flex  mt-4">
                     <p className="flex items-center gap-3 grow"> <FaRegClock />Show Time</p>
-                    <p className="">{selectedScheduleTime ? selectedScheduleTime : '--'}</p>
+                    <p >{selectedScheduleTime ? selectedScheduleTime : '--'}</p>
                 </div>
                 <div className="flex  mt-4">
                     <p className="flex items-center gap-3 grow"> <FaChair />Seat Type</p>
-                    <p className="">{selectedSeatType ? selectedSeatType.seatType : '--'}</p>
+                    <p >{selectedSeatType ? selectedSeatType.seatType : '--'}</p>
                 </div>
                 <div className="flex mt-4">
                     <p className="flex items-center gap-3 grow"> <BsTicketDetailed /> Ticket Quantity</p>
-                    <p className="">{ticketQuantity ? ticketQuantity : '--'}</p>
+                    <p >{ticketQuantity ? ticketQuantity : '--'}</p>
                 </div>
                 <div className="flex  mt-4">
                     <p className="flex items-center gap-3 grow"> <FaChair />Selected Seat</p>
-                    <p className="">{
+                    <p >{
                         selectedSeat?.length <= 0 ? "--" : selectedSeat?.join(',')
                     }</p>
                 </div>
                 <div className="flex  mt-4">
                     <p className="flex items-center gap-3 grow"> <FaRegMoneyBill1 /> Total Amount</p>
-                    <p className="">{totalAmount ? `${totalAmount} BDT` : '--'}</p>
+                    <p >{totalAmount ? `${totalAmount} BDT` : '--'}</p>
                 </div>
             </div>
             <form onSubmit={handleSubmit(handlePurchaseTicket)} className="space-y-3 ">

@@ -25,13 +25,24 @@
 .active-link-signin {
     @apply btn btn-sm btn-primary rounded-full w-full
 }
-
-.menu-item:hover {
-    @apply block border-b-2 border-red-700 font-bold
+.menu-item{
+    @apply p-3 space-y-2
 }
+.menu-item li a{
+    @apply flex items-center gap-2 hover:bg-yellow-400  rounded-lg py-1 px-2
+}
+.menu-item-active{
+    @apply  bg-red-300 text-white
+}
+/* .menu-item::after{
+    @apply 
+} */
+/* .menu-item:hover {
+    @apply block border-b-2 border-red-700 font-bold
+} */
 
 .active-link {
-    @apply block border-b-2 border-red-700 font-bold
+    @apply block border-b-2 border-red-700 font-bold  
 }
 
 .mobile-menu-active-link {
