@@ -1,12 +1,21 @@
 import useAuth from "../../../hooks/useAuth";
 import useSWR from "swr";
 import moment from "moment";
+import { useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
+import TicketOnlineCard from "../../../components/MainComponents/TicketOnlineCard";
 
 const fetcher = (...args) => fetch(...args).then(res => res.json())
 const MyBookingPage = () => {
     const { user } = useAuth()
-    const { data: myBookings = [], mutate } = useSWR(`http://localhost:3000/booking/my-booking?email=${user?.email}`, fetcher);
+    const printToPdf = useRef();
+    const [booking, setBooking] = useState(null)
 
+    const { data: myBookings = [], mutate } = useSWR(`http://localhost:3000/booking/my-booking?email=${user?.email}`, fetcher);
+    console.log(printToPdf);
+    const handlePrint = useReactToPrint({
+        content: () => printToPdf.current,
+    });
     return (
         <section className="my-container pt-10 py-20 ">
 
@@ -32,7 +41,7 @@ const MyBookingPage = () => {
                                 <td>{moment(myBooking?.date).format('ll')}</td>
                                 <td>{myBooking?.time}</td>
                                 <td>{myBooking?.seat?.join(',')}</td>
-                                <td><button className="btn btn-xs btn-primary">Ticket Print</button></td>
+                                <td><button className="btn btn-xs btn-primary" onClick={() => { handlePrint(), setBooking(myBooking) }}>Ticket Print</button></td>
                             </tr>) : <div role="alert" className="alert">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-info shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 <span>Booking not found</span>
@@ -40,6 +49,12 @@ const MyBookingPage = () => {
                         }
                     </tbody>
                 </table>
+            </div>
+            <div className="hidden" >
+                <div ref={printToPdf}>
+                    <TicketOnlineCard booking={booking} />
+                </div>
+
             </div>
         </section>
     );
