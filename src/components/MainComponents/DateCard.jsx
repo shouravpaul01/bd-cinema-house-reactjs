@@ -20,10 +20,7 @@ const DateCard = ({ handleMoviesByDate }) => {
                         <p><span className="text-2xl pe-2">{moment(date).format("D")}</span>{moment(date).format("MMM")}</p>
                     </div>)
                 }
-                <div className="bg-white w-1/6 rounded-md  p-2">
-                    <p>Sun</p>
-                    <p><span className="text-xl">7</span>Dec</p>
-                </div>
+              
             </div>
 
         </>

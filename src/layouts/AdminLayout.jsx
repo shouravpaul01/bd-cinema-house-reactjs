@@ -60,6 +60,7 @@ const AdminLayout = () => {
                     </div>
                     {/* Sidebar content here */}
                     <li><NavLink to={"/dashboard"} className={({ isActive }) => isActive ? "menu-item-active" : ""}>Dashboard</NavLink></li>
+                    <li><NavLink to={'/dashboard/all-user'} className={({ isActive }) => isActive ? "menu-item-active" : ""}>Users</NavLink></li>
                     <li><NavLink to={'/dashboard/movies'} className={({ isActive }) => isActive ? "menu-item-active" : ""}>Movies</NavLink></li>
                     <li><NavLink to={'/dashboard/shows'} className={({ isActive }) => isActive ? "menu-item-active" : ""}>Movie Shows</NavLink></li>
                     <li><NavLink to={'/dashboard/all-booking'} className={({ isActive }) => isActive ? "menu-item-active" : ""}>Booking</NavLink></li>

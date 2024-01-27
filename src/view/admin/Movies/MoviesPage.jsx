@@ -9,9 +9,7 @@ const MoviesPage = () => {
     return (
         <>
             <Heading title={'Add Movie'} btnName={'add'} hrefUrl={'/dashboard/movie/add'}/>
-            <MoviesTable/>
-
-           
+            <MoviesTable/>    
         </>
     );
 };

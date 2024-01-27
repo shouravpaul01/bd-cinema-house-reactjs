@@ -9,8 +9,8 @@ import MovieShowTimes from "./MovieShowTimes";
 import moment from "moment/moment";
 
 
-const ShowTable = () => {
-    const { moviesShow, mutate } = useAllMovieShow()
+const ShowTable = ({moviesShow, mutate }) => {
+   
     // console.log(moviesShow);
     const handleStatus = (_id, status) => {
         axiosInstance.patch(`/show/update-status?_id=${_id}&status=${status}`)

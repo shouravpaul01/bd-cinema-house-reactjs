@@ -52,11 +52,11 @@ const MoviesTable = () => {
     }
     return (
         <>
-            <div className="overflow-x-auto">
-                <table className="table table-xs">
+            <div className="overflow-x-auto pt-10 " >
+                <table className="table ">
                     {/* head */}
                     <thead>
-                        <tr>
+                        <tr className="text-sm">
                             <th></th>
                             <th>Name</th>
                             <th>Duration</th>

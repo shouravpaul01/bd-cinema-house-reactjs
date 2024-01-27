@@ -11,10 +11,13 @@ import deleteBooking from "../../../utils/deleteBooking";
 import TicketBookingSideBar from "../../../components/MainComponents/TicketBookingSideBar";
 import bookedSeatApi from "../../../utils/bookedSeatApi";
 import useAuth from "../../../hooks/useAuth";
+import useMoviesShowDate from "../../../hooks/useMoviesShowDate";
+import Loading from "../../../components/CommonComponents/Loading";
 
 
 const TicketBookingPage = () => {
     const { user } = useAuth()
+    const { moviesShowDate } = useMoviesShowDate()
     const [movies, setMovies] = useState(null)
     const [selectedDate, setSelectedDate] = useState(null)
     const [selectedMovie, setSelectedMovie] = useState(null)
@@ -30,6 +33,7 @@ const TicketBookingPage = () => {
     const [totalAmount, setTotalAmount] = useState(null)
     const [booking, setBooking] = useState(null)
 
+    
     useEffect(() => {
         if (ticketQuantity >= 0) {
             setTotalAmount(ticketQuantity * selectedSeatType?.price)
@@ -173,7 +177,9 @@ const TicketBookingPage = () => {
         }
 
     }
-
+    if (!moviesShowDate) {
+        return <Loading/>
+    }
     return (
         <div className="my-container py-24">
             <div className="flex flex-col md:flex-row gap-7  ">

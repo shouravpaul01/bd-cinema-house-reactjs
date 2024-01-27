@@ -14,6 +14,7 @@ import BookingSuccessPage from "../view/main/TicketBooking/BookingSuccessPage";
 import BookingCencelPage from "../view/main/TicketBooking/BookingCencelPage";
 import MyBookingPage from "../view/main/TicketBooking/MyBookingPage";
 import ShowBookingPage from "../view/admin/Booking/ShowBookingPage";
+import UserPage from "../view/admin/User/UserPage";
 
 const router = createBrowserRouter([
     {
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
         path: '/dashboard',
         element: <AdminLayout />,
         children: [
+            {
+                path: "/dashboard/all-user",
+                element: <UserPage />
+            },
             {
                 path: "/dashboard/movies",
                 element: <MoviesPage />
