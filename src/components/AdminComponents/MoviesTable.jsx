@@ -5,15 +5,19 @@ import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
 import Modal from "../CommonComponents/Modal";
 import AddandEditFrom from "./AddandEditFrom";
-import useAllMovies from "../../hooks/useAllMovies";
 import { Link } from "react-router-dom";
+import moment from "moment";
+import Loading from "../CommonComponents/Loading";
 
 
-const MoviesTable = () => {
-    const { movies, mutate } = useAllMovies()
+const MoviesTable = ({ movies, mutate,isMoviesLoading }) => {
+    
     const [modalId, setModalId] = useState(null)
     const [editData, setEditData] = useState(null)
-    // console.log(editData);
+    if (isMoviesLoading) {
+        return <Loading/>
+    }
+
     const handleStatus = (_id, status) => {
         axiosInstance.patch(`/movie/update-status?_id=${_id}&status=${status}`)
             .then(res => {
@@ -59,6 +63,7 @@ const MoviesTable = () => {
                         <tr className="text-sm">
                             <th></th>
                             <th>Name</th>
+                            <th>Release Date</th>
                             <th>Duration</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -69,6 +74,7 @@ const MoviesTable = () => {
                             movies?.map((movie, index) => <tr key={movie._id}>
                                 <th>{index + 1}</th>
                                 <td>{movie.name}</td>
+                                <td>{moment(movie.releaseDate).format('ll')}</td>
                                 <td>{movie.duration}</td>
                                 <td><button className="btn btn-xs btn-primary uppercase" onClick={() => handleStatus(movie._id, movie.status == 'deactive' ? 'active' : 'deactive')}>{movie.status}</button></td>
                                 <td>

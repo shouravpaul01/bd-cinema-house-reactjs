@@ -2,8 +2,13 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../../axiosConfig";
 import { mutate } from "swr";
 import Pagination from "../CommonComponents/Pagination";
+import { FaTrashCan } from "react-icons/fa6";
+import Loading from "../CommonComponents/Loading";
 
-const UserTable = ({users ,mutate}) => {
+const UserTable = ({ users, mutate, isUserLoading }) => {
+    if (isUserLoading) {
+        return <Loading />
+    }
     const handleRole = (_id, role) => {
         axiosInstance.patch(`/user/update-role?_id=${_id}&role=${role}`)
             .then(res => {
@@ -14,9 +19,19 @@ const UserTable = ({users ,mutate}) => {
 
             })
     }
+    const handleDelete = (_id) => {
+        axiosInstance.delete(`/user/${_id}`)
+            .then(res => {
+                if (res.data.code == 200) {
+                    toast.success(res.data.message);
+                    mutate()
+
+                }
+            })
+    }
     return (
         <>
-        <div className="overflow-x-auto pt-10 " >
+            <div className="overflow-x-auto pt-10 " >
                 <table className="table ">
                     {/* head */}
                     <thead>
@@ -36,18 +51,17 @@ const UserTable = ({users ,mutate}) => {
                                 <td>{user?.email}</td>
                                 <td><button className="btn btn-xs btn-primary uppercase" onClick={() => handleRole(user._id, user.role == 'admin' ? 'claint' : 'admin')}>{user?.role}</button></td>
                                 <td>
-                                    <div className="flex gap-2">
-                                        
+                                    <button onClick={() => handleDelete(user?._id)} className="btn btn-sm btn-circle btn-error " ><FaTrashCan /></button>
 
-                                    </div></td>
+                                </td>
                             </tr>
                             )
                         }
                     </tbody>
                 </table>
             </div>
-          
-            </>
+
+        </>
 
     );
 };

@@ -3,15 +3,18 @@ import axiosInstance from "../../../axiosConfig";
 import { useState } from "react";
 import Modal from "../CommonComponents/Modal";
 import useAllMovieShow from "../../hooks/useAllMovieShow";
-import { FaCircleInfo, FaPenToSquare, FaPlus, FaTrashCan } from "react-icons/fa6";
+import { FaCircleInfo, FaPlus, FaTrashCan } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import MovieShowTimes from "./MovieShowTimes";
 import moment from "moment/moment";
+import Loading from "../CommonComponents/Loading";
 
 
-const ShowTable = ({moviesShow, mutate }) => {
+const ShowTable = ({moviesShow, mutate ,isShowLoading}) => {
    
-    // console.log(moviesShow);
+   if(isShowLoading){
+    return <Loading/>
+   }
     const handleStatus = (_id, status) => {
         axiosInstance.patch(`/show/update-status?_id=${_id}&status=${status}`)
             .then(res => {

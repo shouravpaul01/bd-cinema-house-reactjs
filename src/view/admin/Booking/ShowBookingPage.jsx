@@ -1,50 +1,28 @@
-import moment from "moment";
 import useSWR from "swr";
 import Heading from "../../../components/AdminComponents/Heading";
-import { FaInfo } from "react-icons/fa6";
+import BookingTable from "../../../components/AdminComponents/BookingTable";
+import SearchInput from "../../../components/CommonComponents/SearchInput";
+import Pagination from "../../../components/CommonComponents/Pagination";
+import { useState } from "react";
+import axiosInstance from "../../../../axiosConfig";
 
-const fetcher = (...args) => fetch(...args).then(res => res.json())
+const fetcher = url => axiosInstance.get(url).then(res => res.data)
 const ShowBookingPage = () => {
-    const { data: allBooking = [], mutate } = useSWR(`http://localhost:3000/booking/all-booking`, fetcher);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchValue, setSearchValue] = useState(null);
+    const { data: allBooking = [], mutate,isLoading:isBookingLoading } = useSWR(`/booking/all-booking?page=${currentPage}&search=${searchValue}`, fetcher);
 
     return (
         <>
         <Heading title={'ALL Booking'} />
         <section className="my-container pt-10 ">
-
-            <div className="overflow-x-auto ">
-                <table className="table">
-                    {/* head */}
-                    <thead>
-                        <tr className="text-sm">
-                            <th>Order no</th>
-                            <th>Movie Name</th>
-                            <th>Schedule Date</th>
-                            <th>Show Time</th>
-                            <th>Seat</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* Displayed all booking */}
-                        {
-                            allBooking ? allBooking.map((booking, index) => <tr key={booking?._id}>
-                                <th>{index + 1}</th>
-                                <td>{booking?.movie?.name}</td>
-                                <td>{moment(booking?.date).format('ll')}</td>
-                                <td>{booking?.time}</td>
-                                <td>{booking?.seat?.join(',')}</td>
-                                <td>
-                                <button onClick={() => {}} className="btn btn-sm btn-circle btn-primary " ><FaInfo /></button>
-                                </td>
-                            </tr>) : <div role="alert" className="alert">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-info shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                <span>Booking not found</span>
-                            </div>
-                        }
-                    </tbody>
-                </table>
-            </div>
+        <div className="w-full md:w-80">
+                    <SearchInput setSearchValue={setSearchValue} />
+                </div>
+            <BookingTable allBooking={allBooking?.data} isBookingLoading={isBookingLoading}/>
+            <div className=" mt-3">
+                    <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={allBooking?.totalPages} />
+                </div>
         </section>
         </>
     );

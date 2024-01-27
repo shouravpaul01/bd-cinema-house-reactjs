@@ -15,6 +15,7 @@ import BookingCencelPage from "../view/main/TicketBooking/BookingCencelPage";
 import MyBookingPage from "../view/main/TicketBooking/MyBookingPage";
 import ShowBookingPage from "../view/admin/Booking/ShowBookingPage";
 import UserPage from "../view/admin/User/UserPage";
+import AdminRoute from "./AdminRoute";
 
 const router = createBrowserRouter([
     {
@@ -50,35 +51,35 @@ const router = createBrowserRouter([
     },
     {
         path: '/dashboard',
-        element: <AdminLayout />,
+        element: <PrivateRoute><AdminRoute><AdminLayout /></AdminRoute></PrivateRoute>,
         children: [
             {
                 path: "/dashboard/all-user",
-                element: <UserPage />
+                element: <PrivateRoute><AdminRoute><UserPage /></AdminRoute></PrivateRoute>
             },
             {
                 path: "/dashboard/movies",
-                element: <MoviesPage />
+                element: <PrivateRoute><AdminRoute><MoviesPage /></AdminRoute></PrivateRoute>
             },
             {
                 path: "/dashboard/movie/add",
-                element: <AddandEditPage />
+                element: <PrivateRoute><AdminRoute><AddandEditPage /></AdminRoute></PrivateRoute>
             },
             {
                 path: "/dashboard/shows",
-                element: <ShowsPage />
+                element: <PrivateRoute><AdminRoute><ShowsPage /></AdminRoute></PrivateRoute>
             },
             {
                 path: "/dashboard/show/add",
-                element: <AddShowPage />
+                element: <PrivateRoute><AdminRoute><AddShowPage /></AdminRoute></PrivateRoute>
             },
             {
                 path: "/dashboard/show/edit",
-                element: <EditShowPage />
+                element: <PrivateRoute><AdminRoute><EditShowPage /></AdminRoute></PrivateRoute>
             }, 
             {
                 path: "/dashboard/all-booking",
-                element: <ShowBookingPage />
+                element: <PrivateRoute><AdminRoute><ShowBookingPage /></AdminRoute></PrivateRoute>
             },
         ]
     }

@@ -161,7 +161,7 @@ const AddandEditShowFrom = ({ editData }) => {
                         </label>
                         <select className="select select-primary w-full " {...register('movie', { required: "The field is required" })} >
                             <option value="">--Select Movie--</option>
-                            {movies.map(movie => (
+                            {movies?.map(movie => (
                                 <option key={movie._id} value={movie._id}>
                                     {movie.name}
                                 </option>
