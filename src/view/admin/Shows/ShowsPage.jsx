@@ -5,12 +5,10 @@ import Pagination from "../../../components/CommonComponents/Pagination";
 import useAllMovieShow from "../../../hooks/useAllMovieShow";
 import SearchInput from "../../../components/CommonComponents/SearchInput";
 
-
-
 const ShowsPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [searchValue, setSearchValue] = useState(null);
-    const { moviesShow, mutate ,isShowLoading } = useAllMovieShow(currentPage, searchValue)
+    const [searchValue, setSearchValue] = useState("");
+    const { moviesShow, mutate, isShowLoading } = useAllMovieShow(currentPage, searchValue)
     console.log(searchValue);
 
     return (
@@ -20,7 +18,7 @@ const ShowsPage = () => {
                 <div className="w-full md:w-80">
                     <SearchInput setSearchValue={setSearchValue} />
                 </div>
-                <ShowTable moviesShow={moviesShow?.data} mutate={mutate} isShowLoading={isShowLoading}/>
+                <ShowTable moviesShow={moviesShow?.data} mutate={mutate} isShowLoading={isShowLoading} />
                 <div className=" mt-3">
                     <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={moviesShow?.totalPages} />
                 </div>

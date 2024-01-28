@@ -17,7 +17,7 @@ const SearchInput = ({ setSearchValue}) => {
                         onKeyDown={handleKeyDownSearch}
 
                     />
-                    <div onClick={() => setSearchValue(document.getElementById('SearchValue').value)} className="absolute inset-y-0 right-0 flex items-center px-3 rounded-e-md bg-indigo-500 text-white font-bold">
+                    <div onClick={() => setSearchValue(document.getElementById('SearchValue').value)} className="absolute inset-y-0 right-0 flex items-center px-3 rounded-e-md bg-indigo-700 text-white font-bold">
                         <IoSearch />
                     </div>
                 </div>

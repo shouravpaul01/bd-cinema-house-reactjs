@@ -10,7 +10,7 @@ import SearchInput from "../../../components/CommonComponents/SearchInput";
 
 const MoviesPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [searchValue, setSearchValue] = useState(null);
+    const [searchValue, setSearchValue] = useState("");
     const { movies, mutate,isMoviesLoading } = useAllMovies(currentPage,searchValue)
 
    

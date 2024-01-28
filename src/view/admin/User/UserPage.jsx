@@ -8,8 +8,7 @@ const fetcher = (...args) => fetch(...args).then(res => res.json())
 
 const UserPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [searchValue, setSearchValue] = useState(null);
+    const [searchValue, setSearchValue] = useState("");
 
     const { data: users = [], mutate,isLoading:isUserLoading } = useSWR(`http://localhost:3000/user?page=${currentPage}&search=${searchValue}`, fetcher);
     console.log(users.data);
@@ -22,7 +21,7 @@ const UserPage = () => {
                 </div>
                 <UserTable users={users?.data} mutate={mutate} isUserLoading={isUserLoading}/>
                 <div className="mt-3">
-                    <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
+                    <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={users?.totalPages} />
                 </div>
             </div>
         </>
