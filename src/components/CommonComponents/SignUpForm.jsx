@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import { FaArrowRightToBracket, FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import axios from "axios";
@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 
 const SignUpForm = () => {
     const [showPassword, setShowPassword] = useState(false)
+    const [authError, setAuthError] = useState(null)
     const { register, handleSubmit, reset, control, watch, setValue, setError, formState: { errors } } = useForm()
     const { signUp } = useAuth()
     const navigate = useNavigate()
@@ -31,19 +32,25 @@ const SignUpForm = () => {
                     })
                 }
                 if (res.data.code == 200) {
-                    navigate(currentLocation,{replace:true})
+                    navigate('/signin',{replace:true})
                     toast.success(res.data.message)
                     reset()
                 }
             })
         })
         .catch((err) => {
-            console.log(err.message);
+            if (err.message=='Firebase: Error (auth/email-already-in-use).') {
+                setAuthError('Email already exist.')
+            }
+            console.log(err.message,'dd');
           });
     }
     return (
         <div>
             <p className="text-lg font-bold text-indigo-400 text-center border-b">Sign Up</p>
+            {
+                authError && <p className="text-red-400">{authError}</p>
+            }
             <form onSubmit={handleSubmit(handleSignUp)}>
                 <label className="form-control w-full ">
                     <div className="label">
@@ -79,7 +86,7 @@ const SignUpForm = () => {
                     </div>
                     {errors?.confirmPassword && <p className="text-red-400">{errors.confirmPassword.message}</p>}
                 </label>
-                <button type="submit" className="btn btn-sm btn-primary mt-3">Sing in</button>
+                <button type="submit" className="btn btn-sm btn-primary mt-3"><FaArrowRightToBracket />Sing in</button>
             </form>
         </div>
     );

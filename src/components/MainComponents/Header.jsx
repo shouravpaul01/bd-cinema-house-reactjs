@@ -1,7 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
-import { FaAngleDown, FaAngleUp, FaArrowRightFromBracket, FaBars, FaCircleUser, FaHouse, FaUserShield } from "react-icons/fa6";
+import { FaAngleDown, FaAngleUp, FaArrowRightFromBracket, FaBars, FaCircleUser, FaUserShield } from "react-icons/fa6";
 import useAuth from "../../hooks/useAuth";
-import useClaintUser from "../../hooks/useClaintUser";
 import { useState } from "react";
 import movieIcon from '../../../public/movie.svg'
 
@@ -10,8 +9,6 @@ const Header = () => {
     const [isOpenDropdown, setIsOpenDropdown] = useState(false)
 
     const { user, logout } = useAuth()
-    const { claintUser } = useClaintUser()
-
 
     // Sidebar hide when  Mobile menu item click
     const handleSidebarClose = () => {
@@ -21,14 +18,14 @@ const Header = () => {
     const handleLogout = () => {
         logout()
             .then(() => {
-                // Cookies.remove('BD-Tech-Solution')
+                
             })
             .catch((error) => console.log(error))
     };
 
     const commonNavLink = <>
-        <li className=""><NavLink to={'/'} className={({ isActive }) => isActive ? 'active-link ' : ''} onClick={() => handleSidebarClose()}>Home</NavLink></li>
-        <li className=""><NavLink to={'/ticket'} className={({ isActive }) => isActive ? 'active-link ' : ''} >Ticket</NavLink></li>
+        <li className="nav-item"><NavLink to={'/'} className={({ isActive }) => isActive ? 'nav-active-link ' : ''} >Ticket</NavLink></li>
+        <li className="nav-item"><NavLink to={'/my-booking'} className={({ isActive }) => isActive ? 'nav-active-link' : ''}> My Booking</NavLink></li>
        
     </>
     const beforeSignInNavLink = <>
@@ -43,11 +40,11 @@ const Header = () => {
                         </div>
                     <span >{isOpenDropdown ? <FaAngleDown /> : <FaAngleUp />}</span></label>
                 {
-                   isOpenDropdown &&  <ul tabIndex={0} onClick={() => setIsOpenDropdown(!isOpenDropdown)} className="dropdown-content z-[1] menu-item  shadow bg-violet-900 rounded-lg animate-custom mt-4 w-52 ">
-                        <li><NavLink to={`${claintUser ? '/my-booking' : ''}`} className={({ isActive }) => isActive ? 'menu-item-active' : ''}><FaHouse /> My Booking</NavLink></li>
+                   isOpenDropdown &&  <ul tabIndex={0} onClick={() => setIsOpenDropdown(!isOpenDropdown)} className="dropdown-content z-[1] menu-item  shadow bg-white rounded-lg animate-custom mt-4 w-52 ">
+                        
                         <li>
-                            <button onClick={() => handleLogout()} className="flex items-center space-x-2 ps-3"><FaArrowRightFromBracket /><span>Logout</span>
-                            </button>
+                        <NavLink onClick={() => handleLogout()} ><FaArrowRightFromBracket />Logout</NavLink>
+                           
                         </li>
                     </ul>
                 }

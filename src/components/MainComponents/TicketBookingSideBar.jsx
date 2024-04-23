@@ -20,13 +20,14 @@ const TicketBookingSideBar = ({ selectedDate, selectedMovie, selectedScheduleTim
         }
         // console.log('pi') 
     }
+   
     return (
 
         <div className="md:sticky md:top-20 w-full md:w-80  bg-white outline-dashed outline-1 outline-violet-900 rounded-lg px-4 py-8">
             <div className="flex gap-4">
                 {
                     selectedMovie ? <><div className=''>
-                        <img src={leo} className='w-20 h-28 rounded-md' alt="movie picture" />
+                        <img src={selectedMovie?.image} className='w-20 h-28 rounded-md' alt="movie picture" />
                     </div>
                         <div className='space-y-1'>
                             <span className="badge">{selectedMovie?.category}</span>

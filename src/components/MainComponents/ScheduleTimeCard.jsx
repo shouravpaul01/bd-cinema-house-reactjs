@@ -1,4 +1,5 @@
 import React from "react";
+import { FaRegClock } from "react-icons/fa6";
 
 
 const ScheduleTimeCard = ({ showTimesTypesPrice,handleSeatType,scheduleTime,selectedScheduleTime }) => {
@@ -10,7 +11,7 @@ const ScheduleTimeCard = ({ showTimesTypesPrice,handleSeatType,scheduleTime,sele
                 <p className="flex-1 text-xl font-semibold">Hall</p>
                 <div className="flex gap-2" >
                     {
-                        showTimesTypesPrice?.map(element => <div key={element._id} onClick={() => handleSeatType(scheduleTime._id, element._id,element.time.value)} className={`btn btn-sm ${selectedScheduleTime==element.time.value?'btn-primary':'btn-outline btn-primary'}`}>{element.time.value}</div>)
+                        showTimesTypesPrice?.map(element => <div key={element._id} onClick={() => handleSeatType(scheduleTime._id, element._id,element.time.value)} className={`btn btn-sm ${selectedScheduleTime==element.time.value?'btn-primary':'btn-outline btn-primary'}`}><FaRegClock />{element.time.value}</div>)
                     }
                 </div>
             </div>

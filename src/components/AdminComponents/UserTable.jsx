@@ -2,7 +2,7 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../../axiosConfig";
 import { mutate } from "swr";
 import Pagination from "../CommonComponents/Pagination";
-import { FaTrashCan } from "react-icons/fa6";
+import { FaCircleInfo, FaTrashCan } from "react-icons/fa6";
 import Loading from "../CommonComponents/Loading";
 
 const UserTable = ({ users, mutate, isUserLoading }) => {
@@ -31,10 +31,19 @@ const UserTable = ({ users, mutate, isUserLoading }) => {
     }
     return (
         <>
-            <div className="overflow-x-auto pt-10 " >
-                <table className="table ">
+           <div className="overflow-x-auto pt-6">
+                <table className="table bg-white">
+                {
+                        users?.length == 0 && <caption className=" caption-bottom">
+                            <div className='flex gap-2 items-center justify-center text-lg py-2'>
+                                <FaCircleInfo />
+                                <span className=''>Data not found.</span>
+                            </div>
+
+                        </caption>
+                    }
                     {/* head */}
-                    <thead>
+                    <thead className="bg-violet-300">
                         <tr className="text-sm">
                             <th></th>
                             <th>Name</th>
@@ -49,7 +58,7 @@ const UserTable = ({ users, mutate, isUserLoading }) => {
                                 <th>{index + 1}</th>
                                 <td>{user?.name}</td>
                                 <td>{user?.email}</td>
-                                <td><button className="btn btn-xs btn-primary uppercase" onClick={() => handleRole(user._id, user.role == 'admin' ? 'claint' : 'admin')}>{user?.role}</button></td>
+                                <td><button className="btn btn-xs btn-primary uppercase" onClick={() => handleRole(user._id, user.role == 'Admin' ? 'User' : 'Admin')}>{user?.role}</button></td>
                                 <td>
                                     <button onClick={() => handleDelete(user?._id)} className="btn btn-sm btn-circle btn-error " ><FaTrashCan /></button>
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import { FaArrowRightToBracket, FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 const SignInForm = () => {
     const { register, handleSubmit, reset, control, watch, setValue, setError, formState: { errors } } = useForm()
     const [showPassword,setShowPassword]=useState(false)
+    const [authError, setAuthError] = useState(null)
     const { signIn } = useAuth()
     const navigate = useNavigate()
     const location = useLocation()
@@ -22,6 +23,9 @@ const SignInForm = () => {
            reset()
         })
         .catch((err) => {
+            if (err.message=='Firebase: Error (auth/invalid-credential).') {
+                setAuthError('Invalid Email or Password.')
+            }
             console.log(err.message);
           });
     }
@@ -29,6 +33,9 @@ const SignInForm = () => {
     return (
         <div>
             <p className="text-lg font-bold text-indigo-400 text-center border-b">Sign In</p>
+            {
+                authError && <p className="text-red-400">{authError}</p>
+            }
             <form onSubmit={handleSubmit(handleSignIn)}>
                 <label className="form-control w-full ">
                     <div className="label">
@@ -47,7 +54,7 @@ const SignInForm = () => {
                     </div>
                     {errors?.password && <p className="text-red-400">{errors.password.message}</p>}
                 </label>
-                <button type="submit" className="btn btn-sm btn-primary mt-3">Sing in</button>
+                <button type="submit" className="btn btn-sm btn-primary mt-3"><FaArrowRightToBracket />Sign in</button>
             </form>
         </div>
     );

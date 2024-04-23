@@ -1,30 +1,24 @@
 import { useForm, Controller } from "react-hook-form"
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_green.css';
-import { FaCircleArrowRight } from "react-icons/fa6";
+import Select from 'react-select';
+import { FaArrowRotateRight, FaCirclePlus } from "react-icons/fa6";
 import axiosInstance from "../../../axiosConfig";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
-import movieImg from '../../assets/images/movieImg.png';
-import { mutate } from "swr";
+import blankImage from '../../assets/images/movieImg.png';
+import { categoryOptions, genreOptions, languageOptions } from "../../utils/utils";
 
 
-const AddandEditFrom = ({ editData,mutate }) => {
+const AddandEditMovieForm = ({ editData, mutate }) => {
     const movie = editData || null
-    console.log(movie);
     const [imagePreview, setImagePreview] = useState(null);
-    const { register, handleSubmit, reset,control, setValue, setError, formState: { errors } } = useForm()
-//  console.log(movie);
-//  console.log(errors);
-    const categoryOptions = [
-        { value: '', text: '--Select Movie Category--' },
-        { value: '2D', text: '2D' },
-        { value: '3D', text: '3D' },
+    const [isBtnDisable, setIsBtnDisable] = useState(false)
+    const { register, handleSubmit, reset, control, setValue, setError, formState: { errors } } = useForm()
 
-    ];
     useEffect(() => {
         if (movie) {
-            setValue('_id',movie._id)
+            setValue('_id', movie._id)
             setValue('name', movie.name)
             setValue('releaseDate', movie.releaseDate)
             setValue('category', movie.category)
@@ -37,24 +31,24 @@ const AddandEditFrom = ({ editData,mutate }) => {
         }
     }, [movie])
     const handleFileChange = (e) => {
-        const file =e.target.files[0];
+        const file = e.target.files[0];
         if (file) {
-          const reader = new FileReader();
-    
-          reader.onloadend = () => {
-            setImagePreview(reader.result);
-          };
-    
-          // Read the file as a data URL
-          reader.readAsDataURL(file);
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+
+            // Read the file as a data URL
+            reader.readAsDataURL(file);
         } else {
-          setImagePreview(null);
+            setImagePreview(null);
         }
-      };
+    };
     const handleStoreMovie = (data) => {
         console.log(data);
         const formData = new FormData();
-        formData.append("movieImage", data.movieImage[0] );
+        formData.append("file", data.image[0]);
         formData.append("newData", JSON.stringify(data));
 
 
@@ -69,9 +63,13 @@ const AddandEditFrom = ({ editData,mutate }) => {
                             message: element.message,
                         })
                     })
+                    setIsBtnDisable(false)
                 }
-                if (res.data.code == 200) {
+                if (res.status == 200) {
+                    setIsBtnDisable(false)
+                    mutate()
                     toast.success(res.data.message)
+                    setImagePreview(null)
                     reset()
                 }
             })
@@ -81,12 +79,7 @@ const AddandEditFrom = ({ editData,mutate }) => {
     }
     const handleUpdate = (data) => {
         const formData = new FormData();
-        if(data.movieImage.length>0){
-            formData.append("movieImage", data.movieImage[0]);
-        }else{
-            delete data['movieImage']
-        }
-        
+        formData.append("file", data.image[0]);
         formData.append("newData", JSON.stringify(data));
 
         axiosInstance.patch('/movie', formData)
@@ -101,7 +94,7 @@ const AddandEditFrom = ({ editData,mutate }) => {
                         })
                     })
                 }
-                if (res.data.code == 200) {
+                if (res.status == 200) {
                     toast.success(res.data.message)
                     mutate()
                     reset()
@@ -116,8 +109,8 @@ const AddandEditFrom = ({ editData,mutate }) => {
 
     return (
         <>
-            <form onSubmit={handleSubmit(movie ? handleUpdate : handleStoreMovie)}>
-            {movie && <input type="hidden" {...register('_id')} />}
+            <form onSubmit={handleSubmit(movie ? handleUpdate : handleStoreMovie)} className="p-4 md:p-6">
+                {movie && <input type="hidden" {...register('_id')} />}
                 <div className="flex flex-col md:flex-row gap-4">
 
                     <div className="form-control w-full ">
@@ -140,10 +133,10 @@ const AddandEditFrom = ({ editData,mutate }) => {
                             render={({ field }) => (
                                 <Flatpickr
                                     {...field}
-                                    options={{ dateFormat: 'd-M-Y',enableTime:true, static: true }}
+                                    options={{ dateFormat: 'd-M-Y', static: true }}
                                     onChange={(selectedDates, dateStr, ins) => {
                                         setValue('releaseDate', selectedDates[0]),
-                                        console.log(selectedDates);
+                                            console.log(selectedDates);
                                     }}
                                     className="input input-bordered w-full "
                                     placeholder="Release Date"
@@ -163,7 +156,7 @@ const AddandEditFrom = ({ editData,mutate }) => {
                         <select className="select select-primary w-full " {...register('category', { required: "The field is required" })} >
                             {categoryOptions.map(option => (
                                 <option key={option.value} value={option.value}>
-                                    {option.text}
+                                    {option.label}
                                 </option>
                             ))}
 
@@ -174,7 +167,9 @@ const AddandEditFrom = ({ editData,mutate }) => {
                         <label className="label">
                             <span className="label-text">Movie Duration</span>
                         </label>
-                        <input type="number" {...register('duration', { required: "The field is required" })} placeholder="Movie Duration" className="input input-bordered w-full " />
+                        <input type="number" {...register('duration', {
+                            required: "The field is required", validate: value => parseFloat(value) > 0 && parseInt(value) === parseFloat(value)?true: "Please enter Valid Duration(e.g:120 min)." ,
+                        })} placeholder="Movie Duration" className="input input-bordered w-full " />
                         {errors?.duration && <p className="text-red-400">{errors.duration.message}</p>}
                     </div>
 
@@ -193,38 +188,67 @@ const AddandEditFrom = ({ editData,mutate }) => {
                         <label className="label">
                             <span className="label-text">Genre</span>
                         </label>
-                        <input type="text" {...register('genre', { required: "The field is required" })} placeholder="Movie Genres" className="input input-bordered input-primary  w-full " />
+                        
+                        <Controller
+                            name="genre"
+                            control={control}
+                            defaultValue={''}
+                            rules={{ required: "The field is required" }}
+                            render={({ field }) => (
+                                <Select
+                                    {...field}
+                                    closeMenuOnSelect={false}
+                                    options={genreOptions}
+                                    isMulti
+                                />
+                            )}
+                        />
                         {errors?.genre && <p className="text-red-400">{errors.genre.message}</p>}
-                    </div>
-                    <div className="form-control w-full ">
-                        <label className="label">
-                            <span className="label-text">Rating</span>
-                        </label>
-                        <input type="number" {...register('rating', { required: "The field is required" })} placeholder="Rating" className="input input-bordered input-primary  w-full " />
-                        {errors?.rating && <p className="text-red-400">{errors.rating.message}</p>}
                     </div>
                     <div className="form-control w-full ">
                         <label className="label">
                             <span className="label-text">Language</span>
                         </label>
-                        <input type="text" {...register('language', { required: "The field is required" })} placeholder="language" className="input input-bordered input-primary  w-full " />
+                        <Controller
+                            name="language"
+                            control={control}
+                            defaultValue={''}
+                            rules={{ required: "The field is required" }}
+                            render={({ field }) => (
+                                <Select
+                                    {...field}
+                                    closeMenuOnSelect={false}
+                                    options={languageOptions}
+                                    isMulti
+                                />
+                            )}
+                        />
                         {errors?.language && <p className="text-red-400">{errors.language.message}</p>}
                     </div>
+                    <div className="form-control w-full ">
+                        <label className="label">
+                            <span className="label-text">Rating</span>
+                        </label>
+                        <input type="number" {...register('rating', { required: "The field is required", validate: value => parseFloat(value) > 0 && parseFloat(value) < 11 ? true : "Please enter Valid Rating." })} placeholder="Rating" className="input input-bordered input-primary  w-full " />
+                        {errors?.rating && <p className="text-red-400">{errors.rating.message}</p>}
+                    </div>
+                   
 
                 </div>
 
                 <div className="flex flex-col md:flex-row gap-5">
                     <div className="form-control w-full ">
-                        <div className="mt-3">
-                            <img src={imagePreview?imagePreview:movieImg} className="w-28 h-28 outline outline-1 outline-indigo-500 rounded-md" alt="" />
-                        </div>
                         <label className="label">
-                            <span className="label-text">Movie Duration</span>
+                            <span className="label-text">Movie Image</span>
                         </label>
                         {
-                            movie ? <input type="file" {...register('movieImage', { required:false })} className="file-input file-input-bordered file-input-primary w-full " onChange={(e)=>handleFileChange(e)} /> : <input type="file" {...register('movieImage',{ required: "The field is required." })} className="file-input file-input-bordered file-input-primary w-full " onChange={(e)=>handleFileChange(e)} />
+                            editData ? <>
+                                <img src={imagePreview ? imagePreview : editData?.image?.url} className="w-28 h-28 bg-white outline outline-1 outline-indigo-500 rounded-md mb-2" />
+                                <input type="file" {...register('image')} onChange={handleFileChange} className="file-input file-input-bordered file-input-primary w-full " />
+                            </> : <><img src={imagePreview ? imagePreview : blankImage} className="w-28 h-28 bg-white outline outline-1 outline-indigo-500 rounded-md mb-2" />
+                                <input type="file" {...register('image')} onChange={handleFileChange} className="file-input file-input-bordered file-input-primary w-full " /></>
                         }
-                        {errors?.movieImage && <p className="text-red-400">{errors.movieImage.message}</p>}
+                        {errors?.image && <p className="text-red-400">{errors.image.message}</p>}
 
                     </div>
                     <div className="form-control w-full ">
@@ -235,7 +259,13 @@ const AddandEditFrom = ({ editData,mutate }) => {
                         {errors?.description && <p className="text-red-400">{errors.description.message}</p>}
                     </div>
                 </div>
-                <button type="submit" className="btn btn-sm btn-primary rounded-full mt-3"><FaCircleArrowRight /> {movie ? 'update' : 'submit'}</button>
+                <div className="flex gap-3 mt-2">
+                    <button type="submit" className="btn px-8  btn-primary " disabled={isBtnDisable}>{movie ? <FaArrowRotateRight /> : <FaCirclePlus />}{editData ? 'Úpdate' : 'Add'}</button>
+                    {
+
+                        isBtnDisable && <span className="loading loading-spinner text-primary loading-lg"></span>
+                    }
+                </div>
 
             </form>
 
@@ -244,4 +274,4 @@ const AddandEditFrom = ({ editData,mutate }) => {
     );
 };
 
-export default AddandEditFrom;
+export default AddandEditMovieForm;

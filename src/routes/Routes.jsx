@@ -1,85 +1,77 @@
 import { createBrowserRouter } from "react-router-dom";
-import HomePage from "../view/main/Home/HomePage";
+// import HomePage from "../view/main/Home/HomePage";
 import MainLayout from "../layouts/MainLayout";
 import AdminLayout from "../layouts/AdminLayout";
 import MoviesPage from "../view/admin/Movies/MoviesPage";
-import AddandEditPage from "../view/admin/Movies/AddandEdit/AddandEditPage";
 import ShowsPage from "../view/admin/Shows/ShowsPage";
-import AddShowPage from "../view/admin/Shows/AddShow/AddShowPage";
-import EditShowPage from "../view/admin/Shows/EditShow/EditShowPage";
 import TicketBookingPage from "../view/main/TicketBooking/TicketBookingPage";
-import SignInAndUp from "../view/main/SignInAndUp/SignInAndUP";
 import PrivateRoute from "./PrivateRoute";
 import BookingSuccessPage from "../view/main/TicketBooking/BookingSuccessPage";
 import BookingCencelPage from "../view/main/TicketBooking/BookingCencelPage";
 import MyBookingPage from "../view/main/TicketBooking/MyBookingPage";
 import ShowBookingPage from "../view/admin/Booking/ShowBookingPage";
 import UserPage from "../view/admin/User/UserPage";
-import AdminRoute from "./AdminRoute";
+import HomeDashboardPage from "../view/admin/Home/HomeDashboardPage";
+import SignInAndUpPage from "../view/main/SignInAndUp/SignInAndUpPage";
+
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <MainLayout />,
-
+         element:<PrivateRoute roles={['Admin','User']}> <MainLayout /></PrivateRoute>,
+        // element:<MainLayout />,
         children: [
             {
                 path: '/',
-                element: <HomePage />
-            },
-            {
-                path: '/ticket',
-                element: <PrivateRoute><TicketBookingPage /></PrivateRoute>
+                element: <TicketBookingPage />
             },
             {
                 path: '/ticket-booking/success/:bookingId',
-                element: <PrivateRoute><BookingSuccessPage /></PrivateRoute>
+                element: <BookingSuccessPage />
             },
             {
                 path: '/ticket-booking/cencel/:bookingId',
-                element: <PrivateRoute><BookingCencelPage /></PrivateRoute>
+                element: <BookingCencelPage />
             },
             {
                 path: '/my-booking',
-                element: <PrivateRoute><MyBookingPage /></PrivateRoute>
+                element: <MyBookingPage />
             },
-            {
-                path: '/signin',
-                element: <SignInAndUp />
-            }
+            
         ]
     },
     {
+        path: '/signin',
+        element: <SignInAndUpPage />
+    },
+    {
         path: '/dashboard',
-        element: <PrivateRoute><AdminRoute><AdminLayout /></AdminRoute></PrivateRoute>,
+        element:<PrivateRoute roles={['Admin']}><AdminLayout /></PrivateRoute> ,
         children: [
             {
+                path: "/dashboard",
+                element: <HomeDashboardPage />
+            },
+            {
                 path: "/dashboard/all-user",
-                element: <PrivateRoute><AdminRoute><UserPage /></AdminRoute></PrivateRoute>
+                element: <UserPage />
             },
             {
                 path: "/dashboard/movies",
-                element: <PrivateRoute><AdminRoute><MoviesPage /></AdminRoute></PrivateRoute>
-            },
-            {
-                path: "/dashboard/movie/add",
-                element: <PrivateRoute><AdminRoute><AddandEditPage /></AdminRoute></PrivateRoute>
+                element: <MoviesPage />
             },
             {
                 path: "/dashboard/shows",
-                element: <PrivateRoute><AdminRoute><ShowsPage /></AdminRoute></PrivateRoute>
+                element: <ShowsPage />
             },
-            {
-                path: "/dashboard/show/add",
-                element: <PrivateRoute><AdminRoute><AddShowPage /></AdminRoute></PrivateRoute>
-            },
+           
             {
                 path: "/dashboard/show/edit",
-                element: <PrivateRoute><AdminRoute><EditShowPage /></AdminRoute></PrivateRoute>
+                element: <ShowsPage />
             }, 
             {
                 path: "/dashboard/all-booking",
-                element: <PrivateRoute><AdminRoute><ShowBookingPage /></AdminRoute></PrivateRoute>
+                element: <ShowBookingPage />
             },
         ]
     }

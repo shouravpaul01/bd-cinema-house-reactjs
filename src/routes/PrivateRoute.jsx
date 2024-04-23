@@ -2,19 +2,19 @@ import { Navigate, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Loading from "../components/CommonComponents/Loading";
 
-
-
-const PrivateRoute = ({children}) => {
-   const {user,isLoading}=useAuth()
-   const location=useLocation()
-  
+const PrivateRoute = ({ children, roles }) => {
+   const { user, isLoading } = useAuth()
+   const location = useLocation()
+   const checkRole = roles?.includes(user?.role)
+   console.log(user?.role, 'user');
+   console.log(user, 'checkRole');
    if (isLoading) {
-    return <Loading/>
+      return <Loading />
    }
-   if (user) {
-    return children
+   if (user && checkRole) {
+      return children
    }
-   return <Navigate to={'/signin'} state={{from:location}} replace></Navigate>
+   return <Navigate to={'/signin'} state={{ from: location }} replace></Navigate>
 };
 
 export default PrivateRoute;

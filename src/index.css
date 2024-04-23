@@ -25,34 +25,39 @@
 .active-link-signin {
     @apply btn btn-sm btn-primary rounded-full w-full
 }
-.menu-item{
-    @apply p-3 space-y-2
-}
-.menu-item li a{
-    @apply flex items-center gap-2 hover:bg-yellow-400  rounded-lg py-1 px-2
-}
-.menu-item-active{
-    @apply  bg-red-300 text-white
-}
-/* .menu-item::after{
-    @apply 
-} */
-/* .menu-item:hover {
-    @apply block border-b-2 border-red-700 font-bold
-} */
+.nav:hover {
+    @apply max-h-min
+  }
+  
+  .nav-item {
+    @apply px-0 md:px-2 relative
+  }
+  
+  .nav-item:hover {
+    @apply text-white
+  }
 
-.active-link {
-    @apply block border-b-2 border-red-700 font-bold  
-}
+.nav-active-link::before {
+    @apply content-[''] w-full absolute -bottom-[16px] left-0 right-0  h-[2px] bg-white
+  }
 
-.mobile-menu-active-link {
-    @apply bg-indigo-500 text-white
-}
 
 .tab {
-    @apply text-base font-semibold h-10 hover:bg-indigo-500 hover:text-white
+    @apply text-base font-semibold h-10 hover:bg-violet-800 hover:text-white
 }
 
 .label-text {
     @apply text-base
 }
+/* Dashboard */
+.menu-item {
+    @apply p-4 text-base-content space-y-1
+  }
+  
+  .menu-item li a {
+    @apply flex items-center gap-2 hover:bg-violet-700 hover:text-white rounded-md py-2 px-3
+  }
+  
+  .menu-item-active {
+    @apply bg-violet-700 text-white
+  }

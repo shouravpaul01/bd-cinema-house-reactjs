@@ -3,7 +3,10 @@ import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from "react-ico
 
 
 const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
-    
+    console.log(totalPages,'total');
+    if (totalPages==0) {
+        return
+    }
     return (
         <div className="flex gap-3 p-2">
             <button onClick={() => setCurrentPage(currentPage - 1)} className="btn btn-sm btn-circle btn-primary" disabled={currentPage === 1}><MdKeyboardDoubleArrowLeft /></button>

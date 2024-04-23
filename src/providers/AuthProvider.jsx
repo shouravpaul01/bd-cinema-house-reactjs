@@ -3,6 +3,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, on
 import { useEffect, useState } from 'react';
 import app from "../firebase/firebase.config";
 import AuthContext from "../contexts/AuthContext";
+import axiosInstance from "../../axiosConfig";
 
 const auth = getAuth(app);
 const AuthProvider = ({ children }) => {
@@ -24,33 +25,40 @@ const AuthProvider = ({ children }) => {
 
         return updatePassword(signinUser, newPassword)
     }
+    // const deleteUser =  (newPassword) => {
+    //     const signinUser = auth.currentUser;
+
+    //     return updatePassword(signinUser, newPassword)
+    // }
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            
-            // if (currentUser) {
-            //     console.log('1');
-            //     const loggedUser = {
-            //         email: currentUser.email
-            //     }
-            //     fetch('http://localhost:5000/users/jwt-signin', {
-            //         method: "POST",
-            //         headers: {
-            //             'content-type': 'application/json'
-            //         },
-            //         body: JSON.stringify(loggedUser)
-            //     })
-            //         .then(res => res.json())
-            //         .then(data => {
-            //             Cookies.set(import.meta.env.VITE_CookieName, data.token, {
-            //                 expires: 1,
-            //                 secure: true
-            //             })
+            console.log(currentUser,'current User');
+            if (currentUser) {
+                setIsLoading(true);
+                const loggedUser = {
+                    email: currentUser.email
+                }
+                console.log(currentUser.email,'current User');
+                axiosInstance.post('/jwt/jwt-signin',loggedUser)
+                .then(res => {
+                    console.log(res);
+                        // Cookies.set(import.meta.env.VITE_COOKIENAME, res.data.token, {
+                        //     expires: 1,
+                        //     secure: true
+                        // })
+                        setUser(res.data?.user);
+                        setIsLoading(false);
 
-            //         })
-            // }
-            
+                    })
+               
+            }
+           if (!currentUser) {
             setUser(currentUser);
             setIsLoading(false);
+           }
+           
+            
+            
 
         });
          //if access token has expired ,then  user will be signed out

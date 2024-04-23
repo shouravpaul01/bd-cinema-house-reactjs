@@ -1,30 +1,95 @@
-import { useState } from "react";
-import Heading from "../../../components/AdminComponents/Heading";
+import { useEffect, useState } from "react";
 import ShowTable from "../../../components/AdminComponents/ShowTable";
 import Pagination from "../../../components/CommonComponents/Pagination";
 import useAllMovieShow from "../../../hooks/useAllMovieShow";
-import SearchInput from "../../../components/CommonComponents/SearchInput";
+import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/themes/material_green.css';
+import { FaPlus, FaXmark } from "react-icons/fa6";
+import Loading from "../../../components/CommonComponents/Loading";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import axiosInstance from "../../../../axiosConfig";
+import AddandEditShowForm from "../../../components/AdminComponents/AddandEditShowForm";
 
 const ShowsPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchValue, setSearchValue] = useState("");
-    const { moviesShow, mutate, isShowLoading } = useAllMovieShow(currentPage, searchValue)
-    console.log(searchValue);
+    const [contentHide, setContentHide] = useState(false)
+    const [searchParams, setSearchParams] = useSearchParams()
+    const navigate = useNavigate()
+    const showId = searchParams.get('showId') || null
+    const date = searchParams.get('date') || null
+    const timeTypePriceId = searchParams.get('timeTypePriceId') || null
+    const [editData, setEditData] = useState(null)
+    const { moviesShow, mutate, isLoading } = useAllMovieShow(currentPage, searchValue)
 
+
+    useEffect(() => {
+        if (showId && timeTypePriceId) {
+            axiosInstance.get(`/show/edit-data?showId=${showId}&timeTypePriceId=${timeTypePriceId}`)
+                .then(res => {
+                    setContentHide(true)
+                    setEditData(res.data)
+                })
+        }
+        if (showId && date) {
+            console.log('showId');
+            axiosInstance.get(`/show/edit-data?showId=${showId}`)
+                .then(res => {
+                    setContentHide(true)
+                 setEditData(res.data)
+                })
+        }
+
+    }, [searchParams])
     return (
-        <>
-            <Heading title={'Add Movie Shows'} btnName={'add'} hrefUrl={'/dashboard/show/add'} />
-            <div className="py-4">
-                <div className="w-full md:w-80">
-                    <SearchInput setSearchValue={setSearchValue} />
+        <section >
+            {
+                contentHide && <div className="bg-gray-100 ">
+                    <div className='flex items-center bg-violet-700 py-2 px-4'>
+
+                        <p className="font-bold text-white flex-1">{editData ? 'Edit' : 'Add'} Movie Show</p>
+                        <button onClick={() => { setContentHide(!contentHide), navigate('/dashboard/shows'), setSearchParams(''), setEditData(null) }} className={`btn btn-sm btn-circle  ${contentHide ? 'btn-error' : 'btn-info'}`}>{contentHide ? <FaXmark /> : <FaPlus />} </button>
+                    </div>
+
+                    <div className=' transition duration-500 '>
+                        <AddandEditShowForm mutate={mutate} setContentHide={setContentHide} editData={editData} />
+                    </div>
+
+
+
                 </div>
-                <ShowTable moviesShow={moviesShow?.data} mutate={mutate} isShowLoading={isShowLoading} />
-                <div className=" mt-3">
+            }
+            <div className="bg-gray-100 mt-4">
+                <div className='flex items-center bg-violet-700 py-2 px-4'>
+
+                    <p className="font-bold text-white flex-1">All Movies</p>
+                    <button onClick={() => { setContentHide(!contentHide), navigate('/dashboard/shows'), setSearchParams(''), setEditData(null) }} className={`btn btn-sm btn-circle ${contentHide ? 'btn-error' : ' btn-info'}`}>{contentHide ? <FaXmark /> : <FaPlus />} </button>
+                </div>
+                <div className="px-4 py-5">
+
+                    <div className="w-full md:w-80 mb-5">
+                        <Flatpickr
+                            options={{ dateFormat: 'd-M-Y', static: true }}
+                            onChange={(selectedDates, dateStr, ins) => {
+                                setSearchValue(dateStr)
+                            }}
+                            className="input input-bordered w-full "
+                            placeholder="Date"
+                        />
+                    </div>
+
+                    {
+                        isLoading ? <Loading /> : <ShowTable moviesShow={moviesShow?.data} mutate={mutate} />
+                    }
+
+
                     <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={moviesShow?.totalPages} />
+
+
+
                 </div>
             </div>
-
-        </>
+        </section>
     );
 };
 

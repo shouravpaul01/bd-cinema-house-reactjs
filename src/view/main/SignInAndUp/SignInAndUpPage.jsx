@@ -6,7 +6,7 @@ import SignUpForm from "../../../components/CommonComponents/SignUpForm";
 import useAuth from "../../../hooks/useAuth";
 
 
-const SignInAndUp = () => {
+const SignInAndUpPage = () => {
     const [tabActive,setTabActive]=useState('signin')
     const {user}=useAuth()
     //the not showing if user sign in
@@ -21,8 +21,8 @@ const SignInAndUp = () => {
                 <FaRebel  className="text-5xl"/>
             </div> */}
                 <div role="tablist" className="tabs  rounded-t-md">
-                    <Link role="tab" className={`tab rounded-tl-lg ${tabActive==='signin'?'bg-indigo-500 text-white':'bg-slate-200'}`} onClick={()=>setTabActive('signin')}>Sign In</Link>
-                    <Link role="tab" className={`tab rounded-tr-lg ${tabActive==='signup'?'bg-indigo-500 text-white':'bg-slate-200'}`}  onClick={()=>setTabActive('signup')}>Sign Up</Link>
+                    <Link role="tab" className={`tab rounded-tl-lg ${tabActive==='signin'?'bg-violet-800 text-white':'bg-slate-200'}`} onClick={()=>setTabActive('signin')}>Sign In</Link>
+                    <Link role="tab" className={`tab rounded-tr-lg ${tabActive==='signup'?'bg-violet-800 text-white':'bg-slate-200'}`}  onClick={()=>setTabActive('signup')}>Sign Up</Link>
                 </div>
                 <div className="px-4 py-5">
                 {
@@ -43,4 +43,4 @@ const SignInAndUp = () => {
     );
 };
 
-export default SignInAndUp;
+export default SignInAndUpPage;

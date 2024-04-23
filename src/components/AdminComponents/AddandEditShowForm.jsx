@@ -4,26 +4,27 @@ import 'flatpickr/dist/themes/material_green.css';
 import useAllMovies from "../../hooks/useAllMovies";
 import { useEffect, useState } from "react";
 import CreatableSelect from 'react-select/creatable';
-import { FaCircleArrowRight, FaCircleXmark } from "react-icons/fa6";
+import { FaArrowRotateRight, FaCircleArrowRight, FaCirclePlus, FaCircleXmark } from "react-icons/fa6";
 import axiosInstance from "../../../axiosConfig";
 import { toast } from "react-toastify";
 import useAllMovieShow from "../../hooks/useAllMovieShow";
 import { useNavigate } from "react-router-dom";
 
 
-const AddandEditShowFrom = ({ editData }) => {
+const AddandEditShowForm = ({ editData, mutate, setContentHide }) => {
     const movieShows = editData || null
+    const [isBtnDisable, setIsBtnDisable] = useState(false)
+    const [uniqueError, setUniqueError] = useState(null);
     const timeTypePriceId = movieShows?.showTimesTypesPrice && movieShows?.showTimesTypesPrice[0]?._id || null
     console.log(timeTypePriceId);
     const { register, handleSubmit, reset, control, watch, setValue, setError, formState: { errors } } = useForm()
     const checkRegular = watch('regular')
     const premiumRegular = watch('premium')
-    const [uniqueError, setUniqueError] = useState(null);
+
     const { movies } = useAllMovies()
-    const { mutate } = useAllMovieShow()
     const navigate = useNavigate()
 
-    // console.log(movieShows);
+    console.log(movieShows);
     const options = [
         { value: '6:00 am', label: '6:00 am' },
         { value: '10:00 am', label: '10:00 am' },
@@ -53,7 +54,7 @@ const AddandEditShowFrom = ({ editData }) => {
     }, [movieShows])
 
     const handleStore = (data) => {
-
+        setIsBtnDisable(true)
         const regular = data.regular ? { seatType: data.regular, price: data.regularSeatPrice } : null
         const premium = data.premium ? { seatType: data.premium, price: data.premiumSeatPrice } : null
         const seatTypesPrice = []
@@ -65,7 +66,8 @@ const AddandEditShowFrom = ({ editData }) => {
         console.log(newData);
         axiosInstance.post('/show', newData)
             .then(res => {
-                if (res.data.uniqueErrorCode == 204) {
+                setIsBtnDisable(false)
+                if (res.data.uniqueErrorCode == 204) {    
                     setUniqueError(res.data.uniqueErrorMessage)
                 }
                 if (res.data.code === 204) {
@@ -76,8 +78,10 @@ const AddandEditShowFrom = ({ editData }) => {
                             message: element.message,
                         })
                     })
+                    
                 }
-                if (res.data.code == 200) {
+                if (res.status == 200) {
+                    mutate()
                     toast.success(res.data.message)
                     reset()
                     setUniqueError(null)
@@ -85,6 +89,7 @@ const AddandEditShowFrom = ({ editData }) => {
             })
     }
     const handleUpdate = (data) => {
+        setIsBtnDisable(true)
         const regular = data.regular ? { seatType: data.regular, price: data.regularSeatPrice } : null
         const premium = data.premium ? { seatType: data.premium, price: data.premiumSeatPrice } : null
         const seatTypesPrice = []
@@ -109,20 +114,24 @@ const AddandEditShowFrom = ({ editData }) => {
                             message: element.message,
                         })
                     })
+                    setIsBtnDisable(false)
                 }
-                if (res.data.code == 200) {
+                if (res.status == 200) {
+                    setIsBtnDisable(false)
+                    reset()
                     toast.success(res.data.message)
                     mutate()
-                    navigate("/dashboard/shows")
+                    setContentHide(false)
                 }
             })
     }
 
     return (
-        <>{uniqueError && <div onClick={() => setUniqueError(null)} role="alert" className="alert alert-error mt-2">
+        <div className="p-4 md:p-6">
+            {uniqueError && <div onClick={() => setUniqueError(null)} role="alert" className="alert alert-error ">
             <FaCircleXmark />  <span>{uniqueError}</span>
         </div>}
-            <form onSubmit={handleSubmit(movieShows ? handleUpdate : handleStore)}>
+            <form onSubmit={handleSubmit(movieShows ? handleUpdate : handleStore)} >
                 {
                     movieShows && <input type="hidden" {...register('showId')} />
                 }
@@ -147,7 +156,7 @@ const AddandEditShowFrom = ({ editData }) => {
                                     //     setValue('date', selectedDates)
                                     // }}
                                     className="input input-bordered w-full "
-                                    disabled={movieShows? true : false}
+                                    disabled={movieShows ? true : false}
                                     placeholder="Date"
                                 />
                             )}
@@ -206,10 +215,18 @@ const AddandEditShowFrom = ({ editData }) => {
                             <label className="cursor-pointer label w-52  ">
                                 <span className="label-text flex-shrink">Regular</span>
 
-                                <input type="checkbox" {...register('regular')} value={"regular"} className="checkbox checkbox-secondary" />
+                                <input type="checkbox" {...register('regular')} value={"regular"} className="checkbox checkbox-primary" />
                             </label>
                         </div>
-                        {checkRegular && <input type="text" {...register('regularSeatPrice')} placeholder="Price" className="input input-bordered input-primary w-full max-w-xs" />}
+                        <div>
+                            {checkRegular && <input type="number" {...register('regularSeatPrice', {
+                                required: "The field is required", validate: value => {
+                                    const intValue = parseInt(value);
+                                    return intValue > 0 && intValue.toString() === value || "Please enter valid amount.";
+                                }
+                            })} placeholder="Price" className="input input-bordered input-primary w-full max-w-xs" />}
+                            {errors?.regularSeatPrice && <p className="text-red-400">{errors.regularSeatPrice.message}</p>}
+                        </div>
                     </div>
                     <div className="flex gap-10">
 
@@ -217,20 +234,34 @@ const AddandEditShowFrom = ({ editData }) => {
                             <label className="cursor-pointer label w-52 ">
                                 <span className="label-text flex-shrink">Premium</span>
 
-                                <input type="checkbox" {...register('premium')} value={'premium'} className="checkbox checkbox-secondary" />
+                                <input type="checkbox" {...register('premium')} value={'premium'} className="checkbox checkbox-primary" />
                             </label>
                         </div>
-                        {premiumRegular && <input type="text" {...register('premiumSeatPrice')} placeholder="Price" className="input input-bordered input-primary w-full max-w-xs" />}
+                        <div>
+                            {premiumRegular && <input type="number" {...register('premiumSeatPrice', {
+                                required: "The field is required", validate: value => {
+                                    const intValue = parseInt(value);
+                                    return intValue > 0 && intValue.toString() === value || "Please enter valid amount.";
+                                }
+                            })} placeholder="Price" className="input input-bordered input-primary w-full max-w-xs" />}
+                            {errors?.premiumSeatPrice && <p className="text-red-400">{errors.premiumSeatPrice.message}</p>}
+                        </div>
                     </div>
 
                 </div>
 
 
+                <div className="flex gap-3 mt-2">
+                    <button type="submit" className="btn px-8  btn-primary " disabled={isBtnDisable}>{movieShows ? <FaArrowRotateRight /> : <FaCirclePlus />}{editData ? 'Úpdate' : 'Add'}</button>
+                    {
 
-                <button type="submit" className="btn btn-sm px-5 btn-primary rounded-full mt-3"><FaCircleArrowRight /> {movieShows ? 'update' : 'submit'}</button>
+                        isBtnDisable && <span className="loading loading-spinner text-primary loading-lg"></span>
+                    }
+                </div>
+                {/* <button type="submit" className="btn btn-sm px-5 btn-primary rounded-full mt-3"><FaCircleArrowRight /> {movieShows ? 'update' : 'submit'}</button> */}
             </form>
-        </>
+        </div>
     );
 };
 
-export default AddandEditShowFrom;
+export default AddandEditShowForm;
