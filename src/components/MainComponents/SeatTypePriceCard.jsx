@@ -1,6 +1,5 @@
 import React from "react";
 
-
 const SeatTypePriceCard = ({ seatTypesPrice,setSelectedSeatType ,selectedSeatType,setTicketQuantity,setTotalAmount}) => {
     console.log("seattype price card");
    
