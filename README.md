@@ -5,6 +5,20 @@ BD Cinema House is a modern movie ticket booking system designed to provide user
 ## 🚀 Live Demo
 
 Check out the live demo  👉 [BD-Cinema House](https://bd-cinema-house.web.app/) 
+**User Email & Password**
+
+```
+1.
+Email: admin@gmail.com 
+Password: admin@gmail
+Role: Admin
+```
+```
+2.
+Email: user@gmail.com 
+Password: user@gmail
+Role: User
+```
 
 ## 🛠️ Features
 
